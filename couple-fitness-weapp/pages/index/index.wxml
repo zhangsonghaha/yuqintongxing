@@ -1,0 +1,85 @@
+<!-- 首页 -->
+<view class="container">
+  <!-- 加载状态 -->
+  <view wx:if="{{ loading }}" class="loading">
+    <text>加载中...</text>
+  </view>
+  
+  <!-- 错误提示 -->
+  <view wx:if="{{ error && !loading }}" class="error">
+    <text>{{ error }}</text>
+  </view>
+  
+  <!-- 主要内容 -->
+  <view wx:if="{{ !loading && !error }}">
+    <!-- 成就展示 -->
+    <view class="achievement-section">
+      <view class="achievement-card">
+        <view class="achievement-item">
+          <view class="achievement-label">连续打卡</view>
+          <view class="achievement-value">{{ consecutiveDays }}</view>
+          <view class="achievement-unit">天</view>
+        </view>
+        <view class="achievement-item">
+          <view class="achievement-label">等级</view>
+          <view class="achievement-value">Lv.{{ level }}</view>
+          <view class="achievement-unit">💚</view>
+        </view>
+        <view class="achievement-item">
+          <view class="achievement-label">经验值</view>
+          <view class="achievement-value">{{ experience }}</view>
+          <view class="achievement-unit">exp</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 个人状态 -->
+    <view class="status-section">
+      <view class="status-title">我的状态</view>
+      <view class="status-item">
+        <text class="status-label">今天状态</text>
+        <text class="status-value">{{ todayStatus.userCheckedIn ? '✓ 已打卡' : '⏰ 未打卡' }}</text>
+      </view>
+      <view class="status-item" wx:if="{{ todayStatus.userCheckInTime }}">
+        <text class="status-label">打卡时间</text>
+        <text class="status-value">{{ todayStatus.userCheckInTime }}</text>
+      </view>
+    </view>
+    
+    <!-- 对方状态 -->
+    <view class="status-section">
+      <view class="status-title">对方的状态</view>
+      <view wx:if="{{ partnerInfo }}">
+        <view class="status-item">
+          <text class="status-label">{{ partnerInfo.nickname || '对方' }}</text>
+          <text class="status-value">{{ todayStatus.partnerCheckedIn ? '✓ 已打卡' : '⏰ 未打卡' }}</text>
+        </view>
+        <view class="status-item" wx:if="{{ todayStatus.partnerCheckInTime }}">
+          <text class="status-label">打卡时间</text>
+          <text class="status-value">{{ todayStatus.partnerCheckInTime }}</text>
+        </view>
+      </view>
+      <view wx:else class="no-partner">
+        <text class="no-partner-text">还没有配对伴侣</text>
+        <button class="btn-go-pair" bindtap="goToPartnership">去配对</button>
+      </view>
+    </view>
+    
+    <!-- 打卡按钮 -->
+    <view class="action-section">
+      <button class="btn-primary" bindtap="handleCheckIn" disabled="{{ loading }}">
+        打卡（3秒完成）
+      </button>
+    </view>
+    
+    <!-- 快捷操作 -->
+    <view class="quick-action-section">
+      <button class="btn-secondary" wx:if="{{ !todayStatus.partnerCheckedIn }}" bindtap="handleWakeUp">
+        叫醒 TA
+      </button>
+      <button class="btn-secondary" bindtap="handleViewCalendar">
+        查看日历
+      </button>
+    </view>
+  </view>
+</view>

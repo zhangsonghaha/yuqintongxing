@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "始终使用中文回答",
+  "description": "在每次用户提交提示时，提醒 AI 助手使用中文进行回答",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "请使用中文回答用户的问题。无论用户使用什么语言提问，你的回答都必须使用中文（简体中文）。"
+  }
+}

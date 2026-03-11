@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "组织Shell脚本到分类文件夹",
+  "description": "当生成脚本文件时，自动提醒将脚本按功能分类并保存到E:\\vue_package\\MealSnap\\shell目录下的对应子文件夹中",
+  "version": "1",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "如果刚才创建的是脚本文件（.sh, .bat, .ps1等），请根据脚本的功能用途创建对应的分类子文件夹（如：部署脚本/deployment、数据库脚本/database、测试脚本/testing等），然后将脚本移动到E:\\vue_package\\MealSnap\\shell\\[分类文件夹]\\下。请自动完成文件夹创建和文件移动操作。"
+  }
+}

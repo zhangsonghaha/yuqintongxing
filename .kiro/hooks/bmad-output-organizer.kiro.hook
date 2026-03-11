@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "BMAD Output Organizer",
+  "description": "Automatically organizes bmad-method output files into structured subdirectories based on the current feature context and document type, preventing clutter in the default _bmad-output folder",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "_bmad-output/*.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new bmad-method output file was created. Please organize it by:\n1. Detecting the feature context from open files (e.g., if working on 瀑布流布局, use that feature name)\n2. Analyzing the document content to determine its type (测试文档/test, 修复文档/fix, 实现文档/implementation, 总结文档/summary, API文档/api, etc.)\n3. Creating a subdirectory structure: _bmad-output/{feature-name}/{document-type}/\n4. Moving the file to the appropriate subdirectory\n5. If no clear feature context is found, use \"general\" as the feature name\n\nExample structure:\n- _bmad-output/瀑布流布局/测试文档/\n- _bmad-output/瀑布流布局/修复文档/\n- _bmad-output/实时热度指示器/实现文档/\n- _bmad-output/general/brainstorming/"
+  }
+}

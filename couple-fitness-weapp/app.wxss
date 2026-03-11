@@ -1,0 +1,122 @@
+/* 全局样式 */
+
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+view, text, button, input {
+  font-size: 14px;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 容器样式 - 不设置背景色，让页面自定义 */
+.container {
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮样式 - 增强对比度 */
+.btn-primary {
+  background: linear-gradient(135deg, #FF6B9D 0%, #E84C7A 100%);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  text-align: center;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.2);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #FF6B9D;
+  border: 2px solid #FF6B9D;
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:active {
+  background-color: #FFB3D9;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+/* 文本样式 */
+.text-primary {
+  color: #FF6B9D;
+  font-weight: 600;
+}
+
+.text-secondary {
+  color: #666666;
+  font-size: 12px;
+}
+
+.text-success {
+  color: #52C41A;
+}
+
+.text-warning {
+  color: #FAAD14;
+}
+
+.text-danger {
+  color: #F5222D;
+}
+
+/* 间距工具类 */
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+
+.p-8 { padding: 8px; }
+.p-16 { padding: 16px; }
+.p-24 { padding: 24px; }
+
+/* Flex 布局 */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "WeChat API URL Reminder",
+  "description": "Reminds that the WeChat miniprogram backend URL http://1b73e330.r31.cpolar.top is mapped to http://localhost:8080 via cpolar tunnel",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "miniprogram/app.js",
+      "miniprogram/pages/*/index.js",
+      "docs/API地址配置说明.md",
+      "src/main/resources/application.yml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Remember: The WeChat miniprogram backend API URL http://1b73e330.r31.cpolar.top is mapped to http://localhost:8080 through cpolar tunnel. Ensure any API configuration changes account for this mapping."
+  }
+}

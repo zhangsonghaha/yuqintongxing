@@ -1,0 +1,95 @@
+/* chat 页面样式 */
+
+@import '../../styles/colors.wxss';
+
+.container {
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF5FB 100%);
+}
+
+/* 消息列表 */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 16rpx;
+}
+
+/* 消息项 */
+.message-item {
+  display: flex;
+  margin-bottom: 16rpx;
+  align-items: flex-end;
+}
+
+.message-item.sent {
+  justify-content: flex-end;
+}
+
+.message-item.received {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 12rpx 16rpx;
+  border-radius: 12rpx;
+  word-wrap: break-word;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+.message-bubble.sent {
+  background-color: var(--primary-color);
+  color: var(--text-white);
+  border-bottom-right-radius: 4rpx;
+}
+
+.message-bubble.received {
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 输入框 */
+.input-area {
+  display: flex;
+  gap: 12rpx;
+  padding: 12rpx;
+  background-color: var(--bg-white);
+  border-radius: 8rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-field {
+  flex: 1;
+  padding: 12rpx 16rpx;
+  background-color: var(--bg-light);
+  border-radius: 6rpx;
+  border: none;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.input-field::placeholder {
+  color: var(--text-light);
+}
+
+.send-btn {
+  background-color: var(--primary-color);
+  color: var(--text-white);
+  border: none;
+  border-radius: 6rpx;
+  padding: 12rpx 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.send-btn:active {
+  background-color: var(--primary-dark);
+  transform: scale(0.98);
+}

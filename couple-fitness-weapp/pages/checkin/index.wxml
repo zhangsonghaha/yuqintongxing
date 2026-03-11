@@ -1,0 +1,102 @@
+<view class="checkin-container">
+  <!-- 已打卡提示 -->
+  <view wx:if="{{todayCheckIn}}" class="already-checked-in">
+    <view class="success-icon">✓</view>
+    <view class="success-text">今日已打卡</view>
+    <view class="success-detail">{{todayCheckIn.exerciseType}} · {{todayCheckIn.duration}}分钟</view>
+  </view>
+
+  <!-- 打卡表单 -->
+  <view wx:else class="checkin-form">
+    <!-- 运动类型选择 -->
+    <view class="form-section">
+      <view class="section-title">运动类型</view>
+      <view class="exercise-type-selector">
+        <picker 
+          mode="selector" 
+          range="{{exerciseTypes}}"
+          bindchange="onExerciseTypeChange"
+          value="{{exerciseTypeIndex}}"
+        >
+          <view class="picker-value">
+            {{checkInForm.exerciseType || '选择运动类型'}}
+            <text class="arrow">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 运动时长输入 -->
+    <view class="form-section">
+      <view class="section-title">运动时长</view>
+      <view class="duration-input-group">
+        <input 
+          type="number" 
+          placeholder="输入分钟数"
+          value="{{checkInForm.duration}}"
+          bindinput="onDurationInput"
+          class="duration-input"
+        />
+        <view class="duration-unit">分钟</view>
+      </view>
+    </view>
+
+    <!-- 卡路里显示 -->
+    <view class="form-section">
+      <view class="section-title">预计消耗</view>
+      <view class="calories-display">
+        <view class="calories-value">{{estimatedCalories}}</view>
+        <view class="calories-unit">卡路里</view>
+      </view>
+    </view>
+
+    <!-- 图片上传 -->
+    <view class="form-section">
+      <view class="section-title">打卡照片</view>
+      <view class="photo-upload">
+        <view wx:if="{{checkInForm.photoUrl}}" class="photo-preview">
+          <image src="{{checkInForm.photoUrl}}" mode="aspectFill" />
+          <view class="delete-btn" bindtap="deletePhoto">删除</view>
+        </view>
+        <view wx:else class="photo-buttons">
+          <button class="photo-btn camera-btn" bindtap="takePhoto" disabled="{{isUploading}}">
+            <text class="icon">📷</text>
+            <text>拍照</text>
+          </button>
+          <button class="photo-btn album-btn" bindtap="chooseFromAlbum" disabled="{{isUploading}}">
+            <text class="icon">🖼️</text>
+            <text>相册</text>
+          </button>
+        </view>
+        <view wx:if="{{isUploading}}" class="uploading-tip">上传中...</view>
+      </view>
+    </view>
+
+    <!-- 备注输入 -->
+    <view class="form-section">
+      <view class="section-title">备注（可选）</view>
+      <textarea 
+        placeholder="记录你的运动感受..."
+        value="{{checkInForm.notes}}"
+        bindinput="onNotesInput"
+        class="notes-textarea"
+        maxlength="200"
+      />
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="form-actions">
+      <button 
+        class="submit-btn" 
+        bindtap="submitCheckIn"
+        disabled="{{isSubmitting || !checkInForm.exerciseType || !checkInForm.duration}}"
+        loading="{{isSubmitting}}"
+      >
+        {{isSubmitting ? '提交中...' : '确认打卡'}}
+      </button>
+      <button class="cancel-btn" bindtap="cancelCheckIn" disabled="{{isSubmitting}}">
+        取消
+      </button>
+    </view>
+  </view>
+</view>

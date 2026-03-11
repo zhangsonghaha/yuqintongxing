@@ -1,0 +1,327 @@
+@import '../../styles/colors.wxss';
+
+.checkin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF5FB 0%, #FFE5F0 50%, #FFF0F6 100%);
+  padding: 20rpx;
+}
+
+/* 已打卡提示 */
+.already-checked-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.success-text {
+  font-size: 48rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+}
+
+.success-detail {
+  font-size: 32rpx;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 打卡表单 */
+.checkin-form {
+  background: var(--bg-white);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.12);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.form-section {
+  margin-bottom: 32rpx;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16rpx;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+/* 运动类型选择 */
+.exercise-type-selector {
+  background: var(--bg-light);
+  border-radius: 12rpx;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.exercise-type-selector:active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+}
+
+.picker-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  font-size: 32rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: var(--primary-color);
+}
+
+/* 运动时长输入 */
+.duration-input-group {
+  display: flex;
+  align-items: center;
+  background: var(--bg-light);
+  border-radius: 12rpx;
+  padding: 0 16px;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.duration-input-group:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+}
+
+.duration-input {
+  flex: 1;
+  padding: 16px 0;
+  font-size: 32rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  background: transparent;
+  border: none;
+}
+
+.duration-input::placeholder {
+  color: var(--text-light);
+}
+
+.duration-unit {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+/* 卡路里显示 */
+.calories-display {
+  display: flex;
+  align-items: baseline;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--text-white);
+  padding: 28px;
+  border-radius: 12rpx;
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+}
+
+.calories-value {
+  font-size: 64rpx;
+  font-weight: 700;
+  margin-right: 12px;
+  letter-spacing: 2px;
+}
+
+.calories-unit {
+  font-size: 28rpx;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+/* 图片上传 */
+.photo-upload {
+  background: var(--bg-light);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  border: 1px solid var(--border-light);
+}
+
+.photo-preview {
+  position: relative;
+  width: 100%;
+  height: 300rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.photo-preview image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 24rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:active {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(0.95);
+}
+
+.photo-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.photo-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-white);
+  border: 2px solid var(--primary-color);
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(255, 107, 157, 0.1);
+}
+
+.photo-btn:active {
+  background: var(--primary-light);
+  transform: scale(0.98);
+}
+
+.photo-btn .icon {
+  font-size: 56rpx;
+  margin-bottom: 8px;
+}
+
+.uploading-tip {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 24rpx;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+/* 备注输入 */
+.notes-textarea {
+  width: 100%;
+  min-height: 150rpx;
+  padding: 16px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.notes-textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+}
+
+.notes-textarea::placeholder {
+  color: var(--text-light);
+}
+
+/* 提交按钮 */
+.form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32rpx;
+}
+
+.submit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--text-white);
+  border: none;
+  border-radius: 12rpx;
+  padding: 18px;
+  font-size: 32rpx;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.35);
+  letter-spacing: 1px;
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  box-shadow: 0 3px 12px rgba(255, 107, 157, 0.25);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.cancel-btn {
+  flex: 1;
+  background: var(--bg-white);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 12rpx;
+  padding: 16px;
+  font-size: 32rpx;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.cancel-btn:active:not(:disabled) {
+  background: var(--primary-light);
+  transform: scale(0.98);
+}
+
+.cancel-btn:disabled {
+  opacity: 0.6;
+}

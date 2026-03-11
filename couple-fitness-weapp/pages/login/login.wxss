@@ -1,0 +1,7 @@
+/* login 椤甸潰鏍峰紡 */
+
+.container {
+  padding: 16px;
+  background-color: #F7F7F7;
+  min-height: 100vh;
+}

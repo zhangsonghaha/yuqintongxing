@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Waterfall Test Analysis",
+  "description": "Analyzes MealSnap 2.0 waterfall test results and provides next step suggestions using bmad-agent-bmad-master",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "_bmad-output/mealsnap-2.0-waterfall-test-manual.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "/bmad-agent-bmad-master _bmad-output/mealsnap-2.0-waterfall-test-manual.md 这是测试结果给出下一步建议"
+  }
+}

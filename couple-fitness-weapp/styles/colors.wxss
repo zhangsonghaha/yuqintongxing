@@ -1,0 +1,255 @@
+/* 全局颜色定义 - 情侣健身应用 */
+
+/* 主色调 - 粉色系 */
+:root {
+  --primary-color: #FF6B9D;      /* 主粉色 */
+  --primary-light: #FFB3D9;      /* 浅粉色 */
+  --primary-dark: #E84C7A;       /* 深粉色 */
+  
+  /* 辅助色 */
+  --secondary-color: #FF8FB3;    /* 辅助粉色 */
+  --accent-color: #FFD700;       /* 金色点缀 */
+  
+  /* 中性色 */
+  --text-primary: #333333;       /* 主文本 */
+  --text-secondary: #666666;     /* 次文本 */
+  --text-light: #999999;         /* 浅文本 */
+  --text-white: #FFFFFF;         /* 白色文本 */
+  
+  /* 背景色 */
+  --bg-white: #FFFFFF;           /* 白色背景 */
+  --bg-light: #F5F5F5;           /* 浅灰背景 */
+  --bg-lighter: #FAFAFA;         /* 更浅背景 */
+  
+  /* 状态色 */
+  --success-color: #4CAF50;      /* 成功绿 */
+  --warning-color: #FF9800;      /* 警告橙 */
+  --error-color: #F44336;        /* 错误红 */
+  --info-color: #2196F3;         /* 信息蓝 */
+  
+  /* 边框色 */
+  --border-color: #EEEEEE;       /* 边框灰 */
+  --border-light: #F0F0F0;       /* 浅边框 */
+  
+  /* 阴影 */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 全局样式 - 不强制背景色，让页面自定义 */
+page {
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 文本颜色 */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-light {
+  color: var(--text-light);
+}
+
+.text-white {
+  color: var(--text-white);
+}
+
+/* 背景颜色 */
+.bg-white {
+  background-color: var(--bg-white);
+}
+
+.bg-light {
+  background-color: var(--bg-light);
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-primary-light {
+  background-color: var(--primary-light);
+}
+
+/* 按钮样式 */
+.btn {
+  border: none;
+  border-radius: 8rpx;
+  padding: 16rpx 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--text-white);
+}
+
+.btn-primary:active {
+  background-color: var(--primary-dark);
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  background-color: #CCCCCC;
+  opacity: 0.6;
+}
+
+.btn-secondary {
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  border: 2rpx solid var(--border-color);
+}
+
+.btn-secondary:active {
+  background-color: var(--border-light);
+}
+
+/* 卡片样式 */
+.card {
+  background-color: var(--bg-white);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16rpx;
+}
+
+.card-content {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 输入框样式 */
+.input-group {
+  background-color: var(--bg-light);
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+}
+
+.input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.input-group input::placeholder {
+  color: var(--text-light);
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  padding: 6rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.tag-success {
+  background-color: #E8F5E9;
+  color: var(--success-color);
+}
+
+.tag-warning {
+  background-color: #FFF3E0;
+  color: var(--warning-color);
+}
+
+.tag-error {
+  background-color: #FFEBEE;
+  color: var(--error-color);
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background-color: var(--border-color);
+  margin: 16rpx 0;
+}
+
+/* 间距工具类 */
+.mt-8 { margin-top: 8rpx; }
+.mt-16 { margin-top: 16rpx; }
+.mt-24 { margin-top: 24rpx; }
+.mt-32 { margin-top: 32rpx; }
+
+.mb-8 { margin-bottom: 8rpx; }
+.mb-16 { margin-bottom: 16rpx; }
+.mb-24 { margin-bottom: 24rpx; }
+.mb-32 { margin-bottom: 32rpx; }
+
+.p-8 { padding: 8rpx; }
+.p-16 { padding: 16rpx; }
+.p-24 { padding: 24rpx; }
+.p-32 { padding: 32rpx; }
+
+/* 弹性布局 */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 文本对齐 */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* 圆角 */
+.rounded-sm {
+  border-radius: 4rpx;
+}
+
+.rounded {
+  border-radius: 8rpx;
+}
+
+.rounded-lg {
+  border-radius: 12rpx;
+}
+
+.rounded-full {
+  border-radius: 50%;
+}
