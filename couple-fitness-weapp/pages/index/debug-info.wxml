@@ -1,0 +1,29 @@
+<!-- 调试信息页面 -->
+<view class="debug-container">
+  <view class="debug-section">
+    <text class="debug-title">用户信息</text>
+    <text class="debug-content">{{ userInfoStr }}</text>
+  </view>
+  
+  <view class="debug-section">
+    <text class="debug-title">伴侣信息</text>
+    <text class="debug-content">{{ partnerInfoStr }}</text>
+  </view>
+  
+  <view class="debug-section">
+    <text class="debug-title">用户统计</text>
+    <text class="debug-content">{{ userStatsStr }}</text>
+  </view>
+  
+  <view class="debug-section">
+    <text class="debug-title">打卡记录数量</text>
+    <text class="debug-content">{{ recentCheckIns.length }}</text>
+  </view>
+  
+  <view class="debug-section">
+    <text class="debug-title">打卡记录</text>
+    <text class="debug-content">{{ recentCheckInsStr }}</text>
+  </view>
+  
+  <button bindtap="refreshData">刷新数据</button>
+</view>

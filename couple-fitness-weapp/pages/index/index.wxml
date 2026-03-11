@@ -1,17 +1,21 @@
 <!-- 首页 -->
 <view class="container">
   <!-- 加载状态 -->
-  <view wx:if="{{ loading }}" class="loading">
-    <text>加载中...</text>
+  <view wx:if="{{ loading }}" class="loading-container">
+    <van-loading type="spinner" size="24px">加载中...</van-loading>
   </view>
   
   <!-- 错误提示 -->
-  <view wx:if="{{ error && !loading }}" class="error">
-    <text>{{ error }}</text>
-  </view>
+  <van-empty
+    wx:elif="{{ error }}"
+    description="{{ error }}"
+    image="error"
+  >
+    <van-button round type="primary" bind:click="loadData">重新加载</van-button>
+  </van-empty>
   
   <!-- 主要内容 -->
-  <view wx:if="{{ !loading && !error }}">
+  <view wx:else>
     <!-- 成就展示 -->
     <view class="achievement-section">
       <view class="achievement-card">
@@ -33,6 +37,25 @@
       </view>
     </view>
     
+    <!-- 本周统计 -->
+    <view class="stats-section" wx:if="{{userStats}}">
+      <view class="stats-title">本周统计</view>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <view class="stat-value">{{userStats.weeklyCheckIns || 0}}</view>
+          <view class="stat-label">本周打卡</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{userStats.weeklyDuration || 0}}</view>
+          <view class="stat-label">运动时长</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{userStats.weeklyCalories || 0}}</view>
+          <view class="stat-label">消耗卡路里</view>
+        </view>
+      </view>
+    </view>
+    
     <!-- 个人状态 -->
     <view class="status-section">
       <view class="status-title">我的状态</view>
@@ -47,21 +70,24 @@
     </view>
     
     <!-- 对方状态 -->
-    <view class="status-section">
+    <view class="status-section" bindtap="goToPartnerCheckIns">
       <view class="status-title">对方的状态</view>
       <view wx:if="{{ partnerInfo }}">
         <view class="status-item">
-          <text class="status-label">{{ partnerInfo.nickname || '对方' }}</text>
+          <text class="status-label">{{ partnerInfo.partnerNickname || partnerInfo.nickname || '对方' }}</text>
           <text class="status-value">{{ todayStatus.partnerCheckedIn ? '✓ 已打卡' : '⏰ 未打卡' }}</text>
         </view>
         <view class="status-item" wx:if="{{ todayStatus.partnerCheckInTime }}">
           <text class="status-label">打卡时间</text>
           <text class="status-value">{{ todayStatus.partnerCheckInTime }}</text>
         </view>
+        <view class="status-hint">
+          <text class="hint-text">点击查看TA的打卡记录 ></text>
+        </view>
       </view>
       <view wx:else class="no-partner">
         <text class="no-partner-text">还没有配对伴侣</text>
-        <button class="btn-go-pair" bindtap="goToPartnership">去配对</button>
+        <button class="btn-go-pair" bindtap="goToPartnership" catchtap="goToPartnership">去配对</button>
       </view>
     </view>
     
@@ -81,5 +107,34 @@
         查看日历
       </button>
     </view>
+    
+    <!-- 最近打卡记录 -->
+    <view class="recent-section" wx:if="{{ recentCheckIns.length > 0 }}">
+      <view class="section-header">
+        <text class="section-title">最近打卡</text>
+        <text class="section-more" bindtap="handleViewCalendar">查看更多 ></text>
+      </view>
+      <view class="recent-list">
+        <check-in-card 
+          wx:for="{{ recentCheckIns }}" 
+          wx:key="recordId"
+          record="{{ item }}"
+          bind:cardtap="onCheckInCardTap"
+          bind:likechange="onLikeChange"
+          bind:comment="onComment"
+          bind:interactionupdate="onInteractionUpdate"
+        />
+      </view>
+    </view>
+    
+    <!-- 无打卡记录提示 -->
+    <view class="empty-section" wx:if="{{ !loading && recentCheckIns.length === 0 }}">
+      <text class="empty-text">还没有打卡记录</text>
+      <text class="empty-hint">快去完成第一次打卡吧！</text>
+    </view>
   </view>
 </view>
+
+<!-- Toast 和 Dialog -->
+<van-toast id="van-toast" />
+<van-dialog id="van-dialog" />

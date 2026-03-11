@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "打卡记录",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "check-in-card": "/components/custom/check-in-card/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-empty": "@vant/weapp/empty/index"
+  }
+}

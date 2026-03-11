@@ -1,0 +1,154 @@
+/* components/custom/comment-list/index.wxss */
+.comment-list-container {
+  padding: 24rpx;
+  background-color: #fff;
+}
+
+/* 点赞区域 */
+.likes-section {
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.section-header .icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.section-header .title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.likes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.like-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  background-color: #f5f5f5;
+  border-radius: 20rpx;
+}
+
+.like-item .avatar {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+}
+
+.like-item .nickname {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 评论区域 */
+.comments-section {
+  min-height: 200rpx;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.comment-item {
+  display: flex;
+  gap: 16rpx;
+}
+
+.comment-item .avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.comment-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comment-header .nickname {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.comment-header .time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.comment-text {
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #666;
+  word-break: break-all;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.delete-btn {
+  font-size: 24rpx;
+  color: #ff4d4f;
+  padding: 4rpx 12rpx;
+}
+
+.delete-btn:active {
+  opacity: 0.6;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+  font-size: 28rpx;
+  color: #999;
+}

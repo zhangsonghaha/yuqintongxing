@@ -32,15 +32,11 @@ App({
     const token = wx.getStorageSync('token');
     const userId = wx.getStorageSync('userId');
     
-    if (!token || !userId) {
-      // 未登录，跳转到登录页
-      wx.redirectTo({
-        url: '/pages/login/index'
-      });
-    } else {
+    if (token && userId) {
       // 已登录，加载用户信息
       this.loadUserInfo();
     }
+    // 注意：不在这里跳转到登录页，让各个页面自己处理未登录的情况
   },
 
   /**

@@ -136,3 +136,18 @@
   text-decoration: underline;
   margin: 0 5rpx;
 }
+
+
+/* 测试登录链接 */
+.test-login-link {
+  margin-top: 24px;
+  text-align: center;
+  padding: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.test-link-text {
+  font-size: 26rpx;
+  color: #999;
+  text-decoration: underline;
+}

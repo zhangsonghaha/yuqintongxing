@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "calendar"
+  "navigationBarTitleText": "打卡日历",
+  "navigationBarBackgroundColor": "#FF6B9D",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#FFF5FB",
+  "usingComponents": {}
 }

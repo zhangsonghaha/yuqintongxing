@@ -1,5 +1,6 @@
 const app = getApp();
 const { request } = require('../../utils/request');
+const realtimeUpdater = require('../../utils/realtime');
 
 Page({
   data: {
@@ -318,6 +319,9 @@ Page({
         estimatedCalories: 0,
         todayCheckIn: res.data
       });
+      
+      // 触发实时更新
+      realtimeUpdater.triggerUpdate();
       
       // 延迟返回首页
       setTimeout(() => {

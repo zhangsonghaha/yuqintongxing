@@ -22,6 +22,11 @@
         <text class="tip-icon">ℹ️</text>
         <text class="tip-text">首次登录将自动创建账户</text>
       </view>
+      
+      <!-- 测试登录入口 -->
+      <view class="test-login-link" bindtap="goToTestLogin">
+        <text class="test-link-text">开发测试登录 ></text>
+      </view>
     </view>
   </view>
 

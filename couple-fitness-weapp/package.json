@@ -1,0 +1,21 @@
+{
+  "name": "couple-fitness-weapp",
+  "version": "1.0.0",
+  "description": "情侣健身打卡小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo '请在微信开发者工具中打开项目'",
+    "build": "echo '请在微信开发者工具中构建项目'"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "fitness",
+    "couple"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}

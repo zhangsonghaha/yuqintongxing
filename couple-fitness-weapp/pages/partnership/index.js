@@ -241,9 +241,9 @@ Page({
                   title: '配对成功',
                   icon: 'success'
                 });
-                // 保存伴侣信息
+                // 保存伴侣信息（使用正确的key）
                 const partner = res.data;
-                wx.setStorageSync('partner', partner);
+                wx.setStorageSync('partnerInfo', partner);
                 
                 // 更新状态
                 this.setData({
@@ -337,8 +337,8 @@ Page({
                   title: '已解除配对',
                   icon: 'success'
                 });
-                // 清除本地存储的伴侣信息
-                wx.removeStorageSync('partner');
+                // 清除本地存储的伴侣信息（使用正确的key）
+                wx.removeStorageSync('partnerInfo');
                 
                 // 更新状态
                 this.setData({

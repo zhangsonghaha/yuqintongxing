@@ -1,4 +1,123 @@
-<!-- calendar 椤甸潰 -->
-<view class="container">
-  <text>calendar 椤甸潰寮€鍙戜腑...</text>
+<!-- 日历页面 -->
+<view class="calendar-container">
+  <!-- 日历组件 -->
+  <view class="calendar-section">
+    <view class="calendar-header">
+      <text class="calendar-title">{{currentYear}}年{{currentMonth}}月</text>
+      <view class="calendar-nav">
+        <text class="nav-btn" bindtap="onPrevMonth">上月</text>
+        <text class="nav-btn" bindtap="onNextMonth">下月</text>
+      </view>
+    </view>
+    
+    <!-- 自定义日历视图 -->
+    <view class="calendar-grid">
+      <!-- 星期标题 -->
+      <view class="week-header">
+        <text class="week-day" wx:for="{{weekDays}}" wx:key="index">{{item}}</text>
+      </view>
+      
+      <!-- 日期网格 -->
+      <view class="date-grid">
+        <view 
+          class="date-cell {{item.isCurrentMonth ? '' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.hasCheckIn ? 'has-checkin' : ''}} {{item.date === selectedDate ? 'selected' : ''}}"
+          wx:for="{{calendarDates}}" 
+          wx:key="index"
+          bindtap="onDateClick"
+          data-date="{{item.date}}"
+          data-has-checkin="{{item.hasCheckIn}}">
+          <text class="date-number">{{item.day}}</text>
+          <view wx:if="{{item.hasCheckIn}}" class="checkin-dot"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选器 -->
+  <view class="filter-section">
+    <view class="filter-header">
+      <text class="filter-title">筛选条件</text>
+      <text class="filter-reset" bindtap="onResetFilter">重置</text>
+    </view>
+    
+    <view class="filter-content">
+      <!-- 运动类型筛选 -->
+      <view class="filter-item">
+        <text class="filter-label">运动类型：</text>
+        <scroll-view class="filter-tags" scroll-x>
+          <text 
+            class="filter-tag {{filterType === '' ? 'active' : ''}}" 
+            bindtap="onFilterTypeChange" 
+            data-type="">全部</text>
+          <text 
+            class="filter-tag {{filterType === item.value ? 'active' : ''}}" 
+            wx:for="{{exerciseTypes}}" 
+            wx:key="value"
+            bindtap="onFilterTypeChange" 
+            data-type="{{item.value}}">{{item.label}}</text>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡记录列表 -->
+  <view class="records-section">
+    <view class="records-header">
+      <text class="records-title">打卡记录</text>
+      <text class="records-count">共 {{totalRecords}} 条</text>
+    </view>
+    
+    <view class="records-list" wx:if="{{records.length > 0}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="recordId">
+        <view class="record-date">
+          <text class="date-day">{{item.dayOfMonth}}</text>
+          <text class="date-month">{{item.monthYear}}</text>
+        </view>
+        
+        <view class="record-content">
+          <view class="record-header-row">
+            <view class="record-type">
+              <text class="type-icon">🏃</text>
+              <text class="type-text">{{item.exerciseType}}</text>
+            </view>
+            <text class="record-time">{{item.createTime}}</text>
+          </view>
+          
+          <view class="record-stats">
+            <view class="stat-item">
+              <text class="stat-label">时长</text>
+              <text class="stat-value">{{item.duration}}分钟</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">卡路里</text>
+              <text class="stat-value">{{item.calories}}千卡</text>
+            </view>
+          </view>
+          
+          <image wx:if="{{item.photoUrl}}" class="record-photo" src="{{item.photoUrl}}" mode="aspectFill" bindtap="onPreviewImage" data-url="{{item.photoUrl}}"></image>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{records.length === 0 && !loading}}">
+      <text class="empty-icon">📅</text>
+      <text class="empty-text">暂无打卡记录</text>
+      <text class="empty-hint">快去打卡吧~</text>
+    </view>
+    
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && records.length > 0}}">
+      <text class="load-more-text" bindtap="onLoadMore">{{loadingMore ? '加载中...' : '加载更多'}}</text>
+    </view>
+    
+    <view class="no-more" wx:if="{{!hasMore && records.length > 0}}">
+      <text class="no-more-text">没有更多了</text>
+    </view>
+  </view>
+  
+  <!-- 加载中 -->
+  <view class="loading-overlay" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
 </view>

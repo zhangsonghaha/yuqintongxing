@@ -146,5 +146,14 @@ Page({
       icon: 'none',
       duration: 2000
     });
+  },
+
+  /**
+   * 跳转到测试登录页面
+   */
+  goToTestLogin() {
+    wx.navigateTo({
+      url: '/pages/login/test-login'
+    });
   }
 });

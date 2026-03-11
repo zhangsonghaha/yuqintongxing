@@ -1,0 +1,132 @@
+/* 测试登录页面样式 */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF5FB 0%, #FFE5F0 50%, #FFF0F6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+}
+
+.login-card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 48px 32px;
+  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.15);
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FF6B9D;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.input-group {
+  margin-bottom: 32px;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  height: 88rpx;
+  background-color: #F5F5F5;
+  border-radius: 12px;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  background-color: #fff;
+  border-color: #FF6B9D;
+}
+
+.code-input-wrapper {
+  display: flex;
+  gap: 16rpx;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.btn-get-code {
+  width: 200rpx;
+  height: 88rpx;
+  background-color: #FF6B9D;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-get-code:disabled {
+  background-color: #ccc;
+}
+
+.btn-login {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 32rpx;
+  font-weight: 700;
+  margin-top: 48px;
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.35);
+}
+
+.btn-login:disabled {
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.hint {
+  margin-top: 32px;
+  padding: 24rpx;
+  background-color: #FFF9E6;
+  border-radius: 12px;
+  border-left: 4px solid #FFB800;
+}
+
+.hint-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.back-link {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.back-link text {
+  font-size: 28rpx;
+  color: #FF6B9D;
+  text-decoration: underline;
+}

@@ -1,4 +1,50 @@
-<!-- check-in-card 缁勪欢 -->
+<!-- 打卡记录卡片组件 -->
 <view class="check-in-card">
-  <text>check-in-card 缁勪欢</text>
+  <!-- 头部信息 -->
+  <view class="card-header" bindtap="onCardTap">
+    <view class="user-info">
+      <image 
+        class="avatar" 
+        src="{{ record.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQa6Se5ia6ib8PIZiaHR4FF3iamhbDxnmZicmib3gQ/0' }}" 
+        mode="aspectFill" 
+      />
+      <view class="user-details">
+        <text class="nickname">{{ record.nickname || '用户' }}</text>
+        <text class="time">{{ record.checkInTime }}</text>
+      </view>
+    </view>
+    <view class="exercise-type">
+      <text class="type-tag">{{ record.exerciseType }}</text>
+    </view>
+  </view>
+  
+  <!-- 照片 -->
+  <view class="card-photo" wx:if="{{ record.photoUrl }}" bindtap="onCardTap">
+    <image class="photo" src="{{ record.photoUrl }}" mode="aspectFill" />
+  </view>
+  
+  <!-- 运动数据 -->
+  <view class="card-stats" bindtap="onCardTap">
+    <view class="stat-item">
+      <text class="stat-icon">⏱️</text>
+      <text class="stat-value">{{ record.duration }}</text>
+      <text class="stat-unit">分钟</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-icon">🔥</text>
+      <text class="stat-value">{{ record.calories }}</text>
+      <text class="stat-unit">卡路里</text>
+    </view>
+  </view>
+  
+  <!-- 互动栏 -->
+  <interaction-bar 
+    recordId="{{ record.recordId }}"
+    likeCount="{{ record.likeCount || 0 }}"
+    commentCount="{{ record.commentCount || 0 }}"
+    hasLiked="{{ record.hasLiked || false }}"
+    bind:likechange="onLikeChange"
+    bind:comment="onComment"
+    bind:interactionupdate="onInteractionUpdate"
+  />
 </view>

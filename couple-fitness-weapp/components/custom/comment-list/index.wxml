@@ -1,0 +1,55 @@
+<!-- components/custom/comment-list/index.wxml -->
+<view class="comment-list-container">
+  <!-- 点赞列表 -->
+  <view class="likes-section" wx:if="{{likes.length > 0}}">
+    <view class="section-header">
+      <image class="icon" src="/assets/images/icons/heart-filled.png" mode="aspectFit" />
+      <text class="title">{{likes.length}}人点赞</text>
+    </view>
+    <view class="likes-list">
+      <view class="like-item" wx:for="{{likes}}" wx:key="interactionId">
+        <image class="avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <text class="nickname">{{item.nickname || '用户'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 评论列表 -->
+  <view class="comments-section">
+    <view class="section-header" wx:if="{{comments.length > 0}}">
+      <image class="icon" src="/assets/images/icons/comment.png" mode="aspectFit" />
+      <text class="title">评论 {{comments.length}}</text>
+    </view>
+
+    <view class="empty-state" wx:if="{{!loading && comments.length === 0}}">
+      <image class="empty-icon" src="/assets/images/icons/empty-comment.png" mode="aspectFit" />
+      <text class="empty-text">还没有评论，快来抢沙发吧~</text>
+    </view>
+
+    <view class="comments-list" wx:if="{{comments.length > 0}}">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="interactionId">
+        <image class="avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <view class="comment-content">
+          <view class="comment-header">
+            <text class="nickname">{{item.nickname || '用户'}}</text>
+            <text class="time">{{formatTime(item.createdAt)}}</text>
+          </view>
+          <text class="comment-text">{{item.content}}</text>
+          <view class="comment-actions" wx:if="{{item.userId === currentUserId}}">
+            <text 
+              class="delete-btn" 
+              data-interaction-id="{{item.interactionId}}"
+              bindtap="onDeleteComment"
+            >
+              删除
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

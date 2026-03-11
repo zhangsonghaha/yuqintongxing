@@ -1,0 +1,26 @@
+<!-- components/custom/comment-input/index.wxml -->
+<view class="comment-input-container">
+  <view class="input-wrapper {{isFocused ? 'focused' : ''}}">
+    <input 
+      class="comment-input"
+      type="text"
+      placeholder="{{placeholder}}"
+      value="{{commentText}}"
+      bindinput="onInput"
+      bindfocus="onFocus"
+      bindblur="onBlur"
+      maxlength="500"
+      confirm-type="send"
+      bindconfirm="onSend"
+    />
+    <view class="char-count">{{commentText.length}}/500</view>
+  </view>
+  
+  <button 
+    class="send-btn {{commentText.length > 0 ? 'active' : ''}}" 
+    bindtap="onSend"
+    disabled="{{commentText.length === 0}}"
+  >
+    发送
+  </button>
+</view>

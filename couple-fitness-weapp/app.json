@@ -1,9 +1,11 @@
 {
   "pages": [
     "pages/login/index",
+    "pages/login/test-login",
     "pages/partnership/index",
     "pages/index/index",
     "pages/checkin/index",
+    "pages/partner-checkins/index",
     "pages/calendar/calendar",
     "pages/chat/chat",
     "pages/profile/profile"

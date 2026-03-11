@@ -1,0 +1,46 @@
+/* components/custom/interaction-bar/index.wxss */
+.interaction-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  gap: 32rpx;
+}
+
+.interaction-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  background-color: #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.interaction-item:active {
+  background-color: #e0e0e0;
+  transform: scale(0.95);
+}
+
+.icon {
+  font-size: 32rpx;
+  line-height: 1;
+}
+
+.icon.liked {
+  animation: heartbeat 0.3s ease;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.count.liked {
+  color: #ff4d4f;
+  font-weight: 500;
+}

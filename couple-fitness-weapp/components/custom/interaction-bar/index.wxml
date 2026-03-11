@@ -1,0 +1,12 @@
+<!-- components/custom/interaction-bar/index.wxml -->
+<view class="interaction-bar">
+  <view class="interaction-item" bindtap="onLike">
+    <text class="icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '❤️' : '🤍'}}</text>
+    <text class="count {{isLiked ? 'liked' : ''}}">{{likes > 0 ? likes : '点赞'}}</text>
+  </view>
+  
+  <view class="interaction-item" bindtap="onComment">
+    <text class="icon">💬</text>
+    <text class="count">{{comments > 0 ? comments : '评论'}}</text>
+  </view>
+</view>

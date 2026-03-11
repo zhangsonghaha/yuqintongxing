@@ -100,10 +100,37 @@ function request(url, options) {
         console.log('【网络请求】请求成功:', {
           url: fullUrl,
           statusCode: res.statusCode,
+          dataType: typeof res.data,
+          dataKeys: res.data ? Object.keys(res.data) : [],
           data: res.data
         });
         if (res.statusCode === 200) {
-          resolve(res.data);
+          // 检查响应数据格式
+          if (res.data && res.data.code !== undefined) {
+            // RuoYi 框架响应格式
+            if (res.data.code === 200) {
+              // 成功响应,直接返回整个响应对象
+              // 前端可以访问 res.code, res.msg, res.data 或 res.rows
+              console.log('【网络请求】返回成功响应:', {
+                code: res.data.code,
+                msg: res.data.msg,
+                hasData: !!res.data.data,
+                hasRows: !!res.data.rows,
+                dataType: res.data.data ? typeof res.data.data : 'undefined',
+                dataIsArray: Array.isArray(res.data.data)
+              });
+              resolve(res.data);
+            } else {
+              // 业务错误
+              const errorMsg = res.data.msg || res.data.message || '操作失败';
+              console.error('【网络请求】业务错误:', errorMsg);
+              reject(new Error(errorMsg));
+            }
+          } else {
+            // 直接返回数据(没有包装格式)
+            console.log('【网络请求】返回原始数据');
+            resolve(res.data);
+          }
         } else if (res.statusCode === 401) {
           // 令牌过期，尝试刷新
           if (!isRefreshing) {
@@ -133,15 +160,36 @@ function request(url, options) {
             });
           }
         } else {
-          reject(new Error(res.data.msg || res.data.message || '请求失败'));
+          // HTTP 错误
+          let errorMsg = '请求失败';
+          if (res.statusCode === 404) {
+            errorMsg = `接口不存在 (404): ${url}`;
+          } else if (res.data && (res.data.msg || res.data.message)) {
+            errorMsg = res.data.msg || res.data.message;
+          } else {
+            errorMsg = `请求失败 (${res.statusCode})`;
+          }
+          console.error('【网络请求】HTTP错误:', {
+            statusCode: res.statusCode,
+            url: fullUrl,
+            errorMsg: errorMsg
+          });
+          reject(new Error(errorMsg));
         }
       },
       fail: function(err) {
         console.log('【网络请求】请求失败:', {
           url: fullUrl,
-          error: err
+          error: err,
+          errMsg: err.errMsg
         });
-        reject(new Error('网络请求失败，请检查网络连接'));
+        
+        // 判断是否是网络连接失败
+        if (err.errMsg && err.errMsg.indexOf('fail') !== -1) {
+          reject(new Error('无法连接到服务器，请检查：\n1. 后端服务是否启动\n2. 网络连接是否正常\n3. 服务器地址是否正确'));
+        } else {
+          reject(new Error('网络请求失败，请检查网络连接'));
+        }
       }
     });
   });

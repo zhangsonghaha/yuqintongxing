@@ -1,0 +1,54 @@
+<!-- 测试登录页面 -->
+<view class="container">
+  <view class="login-card">
+    <view class="title">测试登录</view>
+    <view class="subtitle">用于开发测试</view>
+    
+    <!-- 手机号输入 -->
+    <view class="input-group">
+      <text class="label">手机号</text>
+      <input 
+        class="input" 
+        type="number" 
+        placeholder="请输入手机号" 
+        value="{{phone}}"
+        bindinput="onPhoneInput"
+        maxlength="11"
+      />
+    </view>
+    
+    <!-- 验证码输入 -->
+    <view class="input-group">
+      <text class="label">验证码</text>
+      <view class="code-input-wrapper">
+        <input 
+          class="input code-input" 
+          type="number" 
+          placeholder="请输入验证码" 
+          value="{{code}}"
+          bindinput="onCodeInput"
+          maxlength="6"
+        />
+        <button class="btn-get-code" bindtap="getCode" disabled="{{codeCountdown > 0}}">
+          {{codeCountdown > 0 ? codeCountdown + 's' : '获取验证码'}}
+        </button>
+      </view>
+    </view>
+    
+    <!-- 登录按钮 -->
+    <button class="btn-login" bindtap="handleLogin" disabled="{{loading}}">
+      {{loading ? '登录中...' : '登录'}}
+    </button>
+    
+    <!-- 提示信息 -->
+    <view class="hint">
+      <text class="hint-text">测试验证码：123456</text>
+      <text class="hint-text">任意手机号均可登录</text>
+    </view>
+    
+    <!-- 返回微信登录 -->
+    <view class="back-link" bindtap="backToWechatLogin">
+      <text>返回微信登录</text>
+    </view>
+  </view>
+</view>
