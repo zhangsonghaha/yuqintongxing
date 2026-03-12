@@ -1,0 +1,79 @@
+<!-- 编辑资料页面 -->
+<view class="container">
+  <!-- 头像区域 -->
+  <view class="avatar-section">
+    <view class="section-title">头像</view>
+    <view class="avatar-wrapper" bindtap="chooseAvatar">
+      <image wx:if="{{ userInfo.avatar }}" class="avatar" src="{{ userInfo.avatar }}" mode="aspectFill"></image>
+      <view wx:else class="avatar-placeholder">
+        <text class="avatar-text">{{ avatarText }}</text>
+      </view>
+      <view class="avatar-edit-icon">✏️</view>
+    </view>
+    <view class="avatar-hint">点击更换头像</view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="form-section">
+    <view class="section-title">基本信息</view>
+    
+    <view class="form-item">
+      <view class="form-label">昵称</view>
+      <input 
+        class="form-input" 
+        value="{{ userInfo.nickname }}" 
+        placeholder="请输入昵称"
+        bindinput="onNicknameInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">性别</view>
+      <picker 
+        class="form-picker" 
+        mode="selector" 
+        range="{{ genderOptions }}" 
+        value="{{ genderIndex }}"
+        bindchange="onGenderChange"
+      >
+        <view class="picker-value">{{ genderOptions[genderIndex] || '请选择' }}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">生日</view>
+      <picker 
+        class="form-picker" 
+        mode="date" 
+        value="{{ userInfo.birthday }}"
+        end="{{ today }}"
+        bindchange="onBirthdayChange"
+      >
+        <view class="picker-value">{{ userInfo.birthday || '请选择' }}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">个性签名</view>
+      <textarea 
+        class="form-textarea" 
+        value="{{ userInfo.signature }}" 
+        placeholder="写点什么吧..."
+        bindinput="onSignatureInput"
+        maxlength="100"
+        show-confirm-bar="{{ false }}"
+      />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="action-section">
+    <button class="btn-primary" bindtap="saveProfile" disabled="{{ saving }}">
+      {{ saving ? '保存中...' : '保存' }}
+    </button>
+  </view>
+</view>
+
+<!-- Toast -->
+<van-toast id="van-toast" />

@@ -1,6 +1,8 @@
 const app = getApp();
 const { request } = require('../../utils/request');
 const realtimeUpdater = require('../../utils/realtime');
+const location = require('../../utils/location');
+const api = require('../../utils/api');
 
 Page({
   data: {
@@ -9,7 +11,10 @@ Page({
       exerciseType: '',
       duration: '',
       photoUrl: '',
-      notes: ''
+      notes: '',
+      latitude: null,
+      longitude: null,
+      location: ''
     },
     
     // 运动类型列表
@@ -20,15 +25,74 @@ Page({
     estimatedCalories: 0,
     isUploading: false,
     isSubmitting: false,
+    isGettingLocation: false,
     todayCheckIn: null
   },
 
   onLoad() {
     this.checkTodayCheckIn();
+    this.getLocation(); // 自动获取位置
   },
 
   onShow() {
     this.checkTodayCheckIn();
+  },
+
+  /**
+   * 获取用户位置
+   */
+  getLocation() {
+    this.setData({ isGettingLocation: true });
+    
+    // 先检查权限
+    location.checkLocationAuth()
+      .then(hasAuth => {
+        if (!hasAuth) {
+          // 请求权限
+          return location.requestLocationAuth();
+        }
+        return true;
+      })
+      .then(() => {
+        // 获取位置和地址
+        return location.getLocationWithAddress();
+      })
+      .then(locationData => {
+        console.log('位置信息:', locationData);
+        
+        // 格式化地址
+        const formattedAddress = location.formatAddress(locationData);
+        
+        this.setData({
+          'checkInForm.latitude': locationData.latitude,
+          'checkInForm.longitude': locationData.longitude,
+          'checkInForm.location': formattedAddress,
+          isGettingLocation: false
+        });
+        
+        wx.showToast({
+          title: '位置获取成功',
+          icon: 'success',
+          duration: 1500
+        });
+      })
+      .catch(err => {
+        console.error('获取位置失败:', err);
+        this.setData({ isGettingLocation: false });
+        
+        wx.showToast({
+          title: '位置获取失败',
+          icon: 'none',
+          duration: 2000
+        });
+      });
+  },
+
+  /**
+   * 重新获取位置
+   */
+  refreshLocation() {
+    this.getLocation();
   },
 
   /**
@@ -265,7 +329,7 @@ Page({
    * 提交打卡
    */
   submitCheckIn() {
-    const { exerciseType, duration, photoUrl } = this.data.checkInForm;
+    const { exerciseType, duration, photoUrl, latitude, longitude, location: locationStr } = this.data.checkInForm;
     
     // 验证必填字段
     if (!exerciseType) {
@@ -291,7 +355,10 @@ Page({
       duration: parseInt(duration),
       photoUrl: photoUrl || null,
       notes: this.data.checkInForm.notes,
-      checkInDate: new Date().toISOString().split('T')[0]
+      checkInDate: new Date().toISOString().split('T')[0],
+      latitude: latitude,
+      longitude: longitude,
+      location: locationStr
     };
     
     console.log('【打卡提交】数据:', checkInData);
@@ -314,7 +381,10 @@ Page({
           exerciseType: '',
           duration: '',
           photoUrl: '',
-          notes: ''
+          notes: '',
+          latitude: null,
+          longitude: null,
+          location: ''
         },
         estimatedCalories: 0,
         todayCheckIn: res.data
@@ -325,9 +395,27 @@ Page({
       
       // 延迟返回首页
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/index/index'
-        });
+        // 检查是否解锁了新成就
+        api.achievementAPI.getAchievements()
+          .then(achievementRes => {
+            if (achievementRes.code === 200 && achievementRes.data && achievementRes.data.length > 0) {
+              // 有成就解锁，跳转到成就页面并显示动画
+              wx.navigateTo({
+                url: '/pages/achievement/index?showAnimation=true'
+              });
+            } else {
+              // 没有成就，返回首页
+              wx.switchTab({
+                url: '/pages/index/index'
+              });
+            }
+          })
+          .catch(() => {
+            // 查询失败，返回首页
+            wx.switchTab({
+              url: '/pages/index/index'
+            });
+          });
       }, 1500);
     }).catch(err => {
       console.error('【打卡提交】失败:', err);

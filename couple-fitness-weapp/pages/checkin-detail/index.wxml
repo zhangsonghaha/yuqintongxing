@@ -1,0 +1,158 @@
+<!--pages/checkin-detail/index.wxml-->
+<view class="detail-container">
+  <!-- 加载中 -->
+  <view class="loading-wrapper" wx:if="{{ loading }}">
+    <van-loading size="24px" color="#FF6B9D">加载中...</van-loading>
+  </view>
+
+  <!-- 详情内容 -->
+  <view class="detail-content" wx:if="{{ !loading && record }}">
+    <!-- 用户信息 -->
+    <view class="user-section">
+      <view class="user-info">
+        <image class="user-avatar" src="{{ record.userAvatar || '../../assets/images/default-avatar.png' }}" />
+        <view class="user-details">
+          <text class="user-name">{{ record.userName || '用户' }}</text>
+          <text class="check-in-time">{{ record.checkInDate }} {{ record.createdAt }}</text>
+        </view>
+      </view>
+      
+      <!-- 删除按钮(仅自己的打卡记录) -->
+      <van-icon 
+        wx:if="{{ record.isOwn }}" 
+        name="delete-o" 
+        size="20px" 
+        color="#999" 
+        bindtap="handleDelete"
+      />
+    </view>
+
+    <!-- 运动信息卡片 -->
+    <view class="exercise-card">
+      <view class="exercise-header">
+        <view class="exercise-type">
+          <van-tag type="primary" size="large">{{ record.exerciseType }}</van-tag>
+        </view>
+      </view>
+
+      <view class="exercise-stats">
+        <view class="stat-item">
+          <van-icon name="clock-o" size="18px" color="#FF6B9D" />
+          <text class="stat-value">{{ record.duration }}</text>
+          <text class="stat-label">分钟</text>
+        </view>
+        
+        <view class="stat-divider"></view>
+        
+        <view class="stat-item">
+          <van-icon name="fire-o" size="18px" color="#FF6B9D" />
+          <text class="stat-value">{{ record.calories || 0 }}</text>
+          <text class="stat-label">卡路里</text>
+        </view>
+        
+        <view class="stat-divider" wx:if="{{ record.distance }}"></view>
+        
+        <view class="stat-item" wx:if="{{ record.distance }}">
+          <van-icon name="location-o" size="18px" color="#FF6B9D" />
+          <text class="stat-value">{{ record.distance }}</text>
+          <text class="stat-label">公里</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 打卡照片 -->
+    <view class="photo-section" wx:if="{{ record.photoUrl }}">
+      <view class="section-title">打卡照片</view>
+      <image 
+        class="check-in-photo" 
+        src="{{ record.photoUrl }}" 
+        mode="aspectFill"
+        bindtap="previewPhoto"
+      />
+    </view>
+
+    <!-- 备注 -->
+    <view class="notes-section" wx:if="{{ record.notes }}">
+      <view class="section-title">备注</view>
+      <view class="notes-content">
+        <text>{{ record.notes }}</text>
+      </view>
+    </view>
+
+    <!-- 位置信息 -->
+    <view class="location-section" wx:if="{{ record.location }}">
+      <view class="section-title">打卡位置</view>
+      <van-cell 
+        title="{{ record.location }}" 
+        icon="location-o"
+        is-link
+        bindtap="viewLocation"
+      />
+    </view>
+
+    <!-- 互动栏 -->
+    <view class="interaction-section">
+      <interaction-bar 
+        recordId="{{ record.recordId }}"
+        hasLiked="{{ record.hasLiked }}"
+        likeCount="{{ record.likeCount }}"
+        commentCount="{{ record.commentCount }}"
+        bind:likechange="onLikeChange"
+        bind:comment="onComment"
+      />
+    </view>
+
+    <!-- 评论列表 -->
+    <view class="comments-section" wx:if="{{ comments.length > 0 }}">
+      <view class="section-title">评论 ({{ comments.length }})</view>
+      <view class="comment-item" wx:for="{{ comments }}" wx:key="interactionId">
+        <view class="comment-header">
+          <image class="comment-avatar" src="{{ item.userAvatar || '../../assets/images/default-avatar.png' }}" />
+          <view class="comment-info">
+            <text class="comment-user">{{ item.userName || '用户' }}</text>
+            <text class="comment-time">{{ item.createdAt }}</text>
+          </view>
+          <van-icon 
+            wx:if="{{ item.userId === record.userId }}" 
+            name="delete-o" 
+            size="16px" 
+            color="#999" 
+            data-interaction-id="{{ item.interactionId }}"
+            bindtap="onDeleteComment"
+          />
+        </view>
+        <view class="comment-content">{{ item.content }}</view>
+      </view>
+    </view>
+
+    <!-- 无评论提示 -->
+    <view class="no-comments" wx:if="{{ !loading && comments.length === 0 }}">
+      <van-empty description="还没有评论，快来抢沙发吧~" />
+    </view>
+
+    <!-- 评论输入 -->
+    <view class="comment-input-section">
+      <comment-input 
+        recordId="{{ record.recordId }}"
+        bind:commentsuccess="onCommentSuccess"
+        bind:interactionupdate="onInteractionUpdate"
+      />
+    </view>
+  </view>
+</view>
+
+<!-- 删除确认对话框 -->
+<van-dialog
+  id="van-dialog"
+  show="{{ showDeleteDialog }}"
+  title="确认删除"
+  message="删除后将无法恢复，确定要删除这条打卡记录吗？"
+  show-cancel-button
+  confirm-button-text="删除"
+  confirm-button-color="#FF6B9D"
+  bind:confirm="confirmDelete"
+  bind:cancel="cancelDelete"
+/>
+
+<!-- Toast -->
+<van-toast id="van-toast" />

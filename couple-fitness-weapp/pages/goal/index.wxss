@@ -1,0 +1,110 @@
+/* pages/goal/index.wxss */
+.goal-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF5FB 0%, #FFE5F0 50%, #FFF0F6 100%);
+  padding: 20rpx;
+}
+
+.goal-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.12);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::before {
+  content: '';
+  width: 8rpx;
+  height: 32rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%);
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+
+.progress-section {
+  margin-top: 30rpx;
+  padding: 20rpx;
+  background: #FFF5FB;
+  border-radius: 16rpx;
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.progress-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.progress-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #FF6B9D;
+}
+
+.button-section {
+  padding: 20rpx 0;
+}
+
+.tips-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-top: 20rpx;
+  box-shadow: 0 4rpx 16px rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.tip-item {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 44rpx;
+  margin-bottom: 12rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Vant 组件样式覆盖 */
+.van-cell-group {
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.van-field__label {
+  color: #333333;
+  font-weight: 500;
+}
+
+.van-field__control {
+  color: #333333;
+  font-weight: bold;
+}
+
+.van-button--primary {
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%);
+  border: none;
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.35);
+}
+
+.van-button--primary:active {
+  box-shadow: 0 3px 12px rgba(255, 107, 157, 0.25);
+}
+

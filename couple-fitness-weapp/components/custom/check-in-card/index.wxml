@@ -37,6 +37,12 @@
     </view>
   </view>
   
+  <!-- 位置信息 -->
+  <view class="card-location" wx:if="{{ record.location }}" bindtap="onCardTap">
+    <text class="location-icon">📍</text>
+    <text class="location-text">{{ record.location }}</text>
+  </view>
+  
   <!-- 互动栏 -->
   <interaction-bar 
     recordId="{{ record.recordId }}"

@@ -5,10 +5,17 @@
     "pages/partnership/index",
     "pages/index/index",
     "pages/checkin/index",
+    "pages/checkin-detail/index",
     "pages/partner-checkins/index",
+    "pages/notifications/index",
     "pages/calendar/calendar",
     "pages/chat/chat",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/goal/index",
+    "pages/achievement/index",
+    "pages/reminder-setting/index",
+    "pages/edit-profile/index",
+    "pages/privacy-setting/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -39,5 +46,13 @@
       }
     ]
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于打卡记录"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "sitemapLocation": "sitemap.json"
 }

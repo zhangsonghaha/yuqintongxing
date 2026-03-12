@@ -98,6 +98,15 @@
   transform: scale(0.98);
 }
 
+/* Vant 按钮自定义样式 */
+.btn-dissolve-vant {
+  background-color: var(--bg-white) !important;
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+
 .tabs {
   display: flex;
   background-color: var(--bg-white);
@@ -269,6 +278,16 @@
   transform: scale(0.98);
 }
 
+/* Vant 按钮自定义样式 */
+.btn-copy-vant, .btn-save-vant {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  margin-bottom: 10px;
+}
+
 .pending-list {
   display: flex;
   flex-direction: column;
@@ -360,6 +379,19 @@
   transform: scale(0.95);
 }
 
+/* Vant 按钮自定义样式 */
+.btn-accept-vant {
+  min-width: 64px;
+  margin-right: 8px;
+}
+
+.btn-reject-vant {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  min-width: 64px;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -438,4 +470,16 @@
   font-size: 13px;
   color: var(--primary-color);
   line-height: 1.6;
+}
+
+/* Vant Empty 组件自定义样式 */
+.empty-hint {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 8px;
+}
+
+/* Vant Field 组件自定义样式 */
+.form-group .van-field {
+  margin-bottom: 8px;
 }

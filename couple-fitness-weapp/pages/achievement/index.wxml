@@ -1,0 +1,158 @@
+<!--成就页面-->
+<view class="achievement-container">
+  <!-- 头部统计 -->
+  <view class="header-section">
+    <view class="stats-card">
+      <view class="stats-icon">🏆</view>
+      <view class="stats-content">
+        <view class="stats-title">我的成就</view>
+        <view class="stats-value">{{ unlockedCount }}/{{ totalCount }}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 徽章网格 -->
+  <view class="badges-section">
+    <view class="section-title">徽章墙</view>
+    
+    <view class="badges-grid" wx:if="{{ !loading && achievements.length > 0 }}">
+      <view 
+        class="badge-item {{ item.unlocked ? 'unlocked' : 'locked' }} {{ item.isNewlyUnlocked ? 'newly-unlocked' : '' }} {{ item.isAlmostUnlocked ? 'almost-unlocked' : '' }}"
+        wx:for="{{ achievements }}"
+        wx:key="badgeType"
+        bindtap="onBadgeClick"
+        data-badge="{{ item }}"
+      >
+        <view class="badge-icon-wrapper">
+          <view class="badge-icon">{{ item.icon }}</view>
+          <view class="lock-overlay" wx:if="{{ !item.unlocked }}">
+            <view class="lock-icon">🔒</view>
+          </view>
+          <!-- 进度环 -->
+          <view class="progress-ring" wx:if="{{ !item.unlocked }}">
+            <view class="progress-ring-circle" style="stroke-dasharray: {{ item.progressPercent * 2.51 }} 251;"></view>
+          </view>
+        </view>
+        <view class="badge-name">{{ item.name }}</view>
+        
+        <!-- 已解锁：显示解锁日期 -->
+        <view class="badge-date" wx:if="{{ item.unlocked }}">{{ item.unlockedAt }}</view>
+        
+        <!-- 未解锁：显示进度 -->
+        <view class="badge-progress-wrapper" wx:else>
+          <view class="badge-progress-bar">
+            <view class="badge-progress-fill" style="width: {{ item.progressPercent }}%;"></view>
+          </view>
+          <view class="badge-progress-text">{{ item.progressText }}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-wrapper" wx:if="{{ loading }}">
+      <van-loading size="24px" color="#667eea">加载中...</van-loading>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-wrapper" wx:if="{{ !loading && achievements.length === 0 }}">
+      <view class="empty-icon">🎯</view>
+      <view class="empty-text">暂无成就数据</view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips-section">
+    <view class="section-title">📖 解锁条件说明</view>
+    
+    <view class="condition-list">
+      <view class="condition-item">
+        <view class="condition-header">
+          <view class="condition-icon">🎯</view>
+          <view class="condition-name">首次打卡</view>
+        </view>
+        <view class="condition-desc">完成1次打卡即可解锁</view>
+        <view class="condition-detail">只要完成任意一次健身打卡，无论运动类型和时长，即可解锁此徽章。</view>
+      </view>
+
+      <view class="condition-item">
+        <view class="condition-header">
+          <view class="condition-icon">🔥</view>
+          <view class="condition-name">连续7天</view>
+        </view>
+        <view class="condition-desc">连续7天每天至少打卡1次</view>
+        <view class="condition-detail">需要连续7天，每天至少完成1次打卡。如果中间有一天未打卡，连续天数将重新计算。</view>
+      </view>
+
+      <view class="condition-item">
+        <view class="condition-header">
+          <view class="condition-icon">💪</view>
+          <view class="condition-name">连续30天</view>
+        </view>
+        <view class="condition-desc">连续30天每天至少打卡1次</view>
+        <view class="condition-detail">需要连续30天，每天至少完成1次打卡。这是对毅力的真正考验，中断后需要重新开始累计。</view>
+      </view>
+
+      <view class="condition-item">
+        <view class="condition-header">
+          <view class="condition-icon">⭐</view>
+          <view class="condition-name">累计100次</view>
+        </view>
+        <view class="condition-desc">累计完成100次打卡</view>
+        <view class="condition-detail">累计打卡次数达到100次即可解锁。不要求连续，只要总次数达标即可。</view>
+      </view>
+
+      <view class="condition-item">
+        <view class="condition-header">
+          <view class="condition-icon">💑</view>
+          <view class="condition-name">情侣目标</view>
+        </view>
+        <view class="condition-desc">你和伴侣各自完成50次打卡</view>
+        <view class="condition-detail">需要你和你的伴侣各自累计完成至少50次打卡。双方都达标后，两人同时解锁此徽章。</view>
+      </view>
+    </view>
+
+    <view class="tips-footer">
+      <view class="tip-item">💡 坚持打卡解锁更多成就</view>
+      <view class="tip-item">🎉 点击徽章查看详细信息</view>
+      <view class="tip-item">🔥 和TA一起完成情侣目标</view>
+    </view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<van-toast id="van-toast" />
+
+<!-- 解锁动画弹窗 -->
+<view class="unlock-modal {{ showUnlockModal ? 'show' : '' }}" wx:if="{{ showUnlockModal }}">
+  <!-- 彩纸效果 -->
+  <view class="confetti-container">
+    <view 
+      class="confetti-particle"
+      wx:for="{{ confettiParticles }}"
+      wx:key="id"
+      style="left: {{ item.left }}%; animation-delay: {{ item.delay }}s; animation-duration: {{ item.duration }}s; background-color: {{ item.color }}; width: {{ item.size }}rpx; height: {{ item.size }}rpx; transform: rotate({{ item.rotation }}deg);"
+    ></view>
+  </view>
+
+  <!-- 解锁内容 -->
+  <view class="unlock-content">
+    <view class="unlock-badge-wrapper">
+      <view class="unlock-badge-icon">{{ newlyUnlockedBadge.icon }}</view>
+      <view class="unlock-sparkle">✨</view>
+    </view>
+    <view class="unlock-title">🎉 恭喜解锁新成就！</view>
+    <view class="unlock-badge-name">{{ newlyUnlockedBadge.name }}</view>
+    <view class="unlock-description">{{ newlyUnlockedBadge.description }}</view>
+    <view class="unlock-date">{{ newlyUnlockedBadge.unlockedAt }}</view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="unlock-actions">
+    <view class="unlock-btn unlock-btn-secondary" bindtap="closeUnlockModal">
+      继续查看
+    </view>
+    <view class="unlock-btn unlock-btn-primary" bindtap="goToHome">
+      返回首页
+    </view>
+  </view>
+</view>

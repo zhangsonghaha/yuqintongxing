@@ -1,5 +1,7 @@
 const api = require('../../utils/api');
 const request = require('../../utils/request');
+import Toast from '@vant/weapp/toast/toast';
+import Dialog from '@vant/weapp/dialog/dialog';
 
 Page({
   data: {
@@ -81,17 +83,11 @@ Page({
             inviteCode: inviteCode,
             qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${inviteCode}`
           });
-          wx.showToast({
-            title: '邀请码已生成',
-            icon: 'success'
-          });
+          Toast.success('邀请码已生成');
         }
       })
       .catch(err => {
-        wx.showToast({
-          title: err.msg || '生成失败',
-          icon: 'none'
-        });
+        Toast.fail(err.msg || '生成失败');
       })
       .finally(() => {
         this.setData({ loading: false });
@@ -105,10 +101,7 @@ Page({
     wx.setClipboardData({
       data: this.data.inviteCode,
       success: () => {
-        wx.showToast({
-          title: '已复制到剪贴板',
-          icon: 'success'
-        });
+        Toast.success('已复制到剪贴板');
       }
     });
   },
@@ -123,16 +116,10 @@ Page({
         wx.saveImageToPhotosAlbum({
           filePath: res.tempFilePath,
           success: () => {
-            wx.showToast({
-              title: '已保存到相册',
-              icon: 'success'
-            });
+            Toast.success('已保存到相册');
           },
           fail: () => {
-            wx.showToast({
-              title: '保存失败',
-              icon: 'none'
-            });
+            Toast.fail('保存失败');
           }
         });
       }
@@ -144,7 +131,7 @@ Page({
    */
   onInviteCodeInput(e) {
     this.setData({
-      inputInviteCode: e.detail.value.toUpperCase()
+      inputInviteCode: e.detail.toUpperCase()
     });
   },
 
@@ -155,10 +142,7 @@ Page({
     const inviteCode = this.data.inputInviteCode.trim();
     
     if (!inviteCode || inviteCode.length !== 6) {
-      wx.showToast({
-        title: '请输入有效的邀请码',
-        icon: 'none'
-      });
+      Toast.fail('请输入有效的邀请码');
       return;
     }
 
@@ -167,10 +151,7 @@ Page({
     request.post(api.partnership.request, { inviteCode })
       .then(res => {
         if (res.code === 200) {
-          wx.showToast({
-            title: '配对请求已发送',
-            icon: 'success'
-          });
+          Toast.success('配对请求已发送');
           this.setData({ inputInviteCode: '' });
           setTimeout(() => {
             this.switchTab({ currentTarget: { dataset: { tab: 'pending' } } });
@@ -178,10 +159,7 @@ Page({
         }
       })
       .catch(err => {
-        wx.showToast({
-          title: err.msg || '发送失败',
-          icon: 'none'
-        });
+        Toast.fail(err.msg || '发送失败');
       })
       .finally(() => {
         this.setData({ loading: false });
@@ -207,10 +185,7 @@ Page({
       })
       .catch(err => {
         console.error('加载请求失败:', err);
-        wx.showToast({
-          title: '加载失败',
-          icon: 'none'
-        });
+        Toast.fail('加载失败');
       })
       .finally(() => {
         this.setData({ loadingRequests: false });
@@ -224,51 +199,46 @@ Page({
     const partnershipId = e.currentTarget.dataset.id;
     const index = this.data.pendingRequests.findIndex(item => item.partnershipId === partnershipId);
     
-    wx.showModal({
+    Dialog.confirm({
       title: '确认配对',
-      content: '确定要接受这个配对请求吗？',
-      success: (res) => {
-        if (res.confirm) {
-          // 设置处理中状态
-          const pendingRequests = this.data.pendingRequests;
-          pendingRequests[index].processing = true;
-          this.setData({ pendingRequests });
+      message: '确定要接受这个配对请求吗？',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    }).then(() => {
+      // 设置处理中状态
+      const pendingRequests = this.data.pendingRequests;
+      pendingRequests[index].processing = true;
+      this.setData({ pendingRequests });
 
-          request.post(`${api.partnership.accept}/${partnershipId}`, {})
-            .then(res => {
-              if (res.code === 200) {
-                wx.showToast({
-                  title: '配对成功',
-                  icon: 'success'
-                });
-                // 保存伴侣信息（使用正确的key）
-                const partner = res.data;
-                wx.setStorageSync('partnerInfo', partner);
-                
-                // 更新状态
-                this.setData({
-                  hasPaired: true,
-                  partnerInfo: partner
-                });
-
-                setTimeout(() => {
-                  wx.switchTab({
-                    url: '/pages/index/index'
-                  });
-                }, 1500);
-              }
-            })
-            .catch(err => {
-              wx.showToast({
-                title: err.msg || '接受失败',
-                icon: 'none'
-              });
-              // 恢复状态
-              pendingRequests[index].processing = false;
-              this.setData({ pendingRequests });
+      request.post(`${api.partnership.accept}/${partnershipId}`, {})
+        .then(res => {
+          if (res.code === 200) {
+            Toast.success('配对成功');
+            // 保存伴侣信息（使用正确的key）
+            const partner = res.data;
+            wx.setStorageSync('partnerInfo', partner);
+            
+            // 更新状态
+            this.setData({
+              hasPaired: true,
+              partnerInfo: partner
             });
-        }
-      }
+
+            setTimeout(() => {
+              wx.switchTab({
+                url: '/pages/index/index'
+              });
+            }, 1500);
+          }
+        })
+        .catch(err => {
+          Toast.fail(err.msg || '接受失败');
+          // 恢复状态
+          pendingRequests[index].processing = false;
+          this.setData({ pendingRequests });
+        });
+    }).catch(() => {
+      // 用户取消
     });
   },
 
@@ -279,37 +249,32 @@ Page({
     const partnershipId = e.currentTarget.dataset.id;
     const index = this.data.pendingRequests.findIndex(item => item.partnershipId === partnershipId);
     
-    wx.showModal({
+    Dialog.confirm({
       title: '确认拒绝',
-      content: '确定要拒绝这个配对请求吗？',
-      success: (res) => {
-        if (res.confirm) {
-          // 设置处理中状态
-          const pendingRequests = this.data.pendingRequests;
-          pendingRequests[index].processing = true;
-          this.setData({ pendingRequests });
+      message: '确定要拒绝这个配对请求吗？',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    }).then(() => {
+      // 设置处理中状态
+      const pendingRequests = this.data.pendingRequests;
+      pendingRequests[index].processing = true;
+      this.setData({ pendingRequests });
 
-          request.post(`${api.partnership.reject}/${partnershipId}`, {})
-            .then(res => {
-              if (res.code === 200) {
-                wx.showToast({
-                  title: '已拒绝',
-                  icon: 'success'
-                });
-                this.loadPendingRequests();
-              }
-            })
-            .catch(err => {
-              wx.showToast({
-                title: err.msg || '拒绝失败',
-                icon: 'none'
-              });
-              // 恢复状态
-              pendingRequests[index].processing = false;
-              this.setData({ pendingRequests });
-            });
-        }
-      }
+      request.post(`${api.partnership.reject}/${partnershipId}`, {})
+        .then(res => {
+          if (res.code === 200) {
+            Toast.success('已拒绝');
+            this.loadPendingRequests();
+          }
+        })
+        .catch(err => {
+          Toast.fail(err.msg || '拒绝失败');
+          // 恢复状态
+          pendingRequests[index].processing = false;
+          this.setData({ pendingRequests });
+        });
+    }).catch(() => {
+      // 用户取消
     });
   },
 
@@ -317,46 +282,41 @@ Page({
    * 解除配对
    */
   dissolvePartnership() {
-    wx.showModal({
+    Dialog.confirm({
       title: '解除配对',
-      content: '确定要解除与伴侣的配对关系吗？此操作不可恢复。',
-      confirmText: '确定解除',
-      confirmColor: '#ff6b6b',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showLoading({
-            title: '处理中...',
-            mask: true
-          });
+      message: '确定要解除与伴侣的配对关系吗？此操作不可恢复。',
+      confirmButtonText: '确定解除',
+      cancelButtonText: '取消',
+      confirmButtonColor: '#FF6B9D'
+    }).then(() => {
+      Toast.loading({
+        message: '处理中...',
+        forbidClick: true,
+        duration: 0
+      });
 
-          request.del(api.partnership.dissolve)
-            .then(res => {
-              wx.hideLoading();
-              if (res.code === 200) {
-                wx.showToast({
-                  title: '已解除配对',
-                  icon: 'success'
-                });
-                // 清除本地存储的伴侣信息（使用正确的key）
-                wx.removeStorageSync('partnerInfo');
-                
-                // 更新状态
-                this.setData({
-                  hasPaired: false,
-                  partnerInfo: null,
-                  activeTab: 'generate'
-                });
-              }
-            })
-            .catch(err => {
-              wx.hideLoading();
-              wx.showToast({
-                title: err.msg || '解除失败',
-                icon: 'none'
-              });
+      request.del(api.partnership.dissolve)
+        .then(res => {
+          Toast.clear();
+          if (res.code === 200) {
+            Toast.success('已解除配对');
+            // 清除本地存储的伴侣信息（使用正确的key）
+            wx.removeStorageSync('partnerInfo');
+            
+            // 更新状态
+            this.setData({
+              hasPaired: false,
+              partnerInfo: null,
+              activeTab: 'generate'
             });
-        }
-      }
+          }
+        })
+        .catch(err => {
+          Toast.clear();
+          Toast.fail(err.msg || '解除失败');
+        });
+    }).catch(() => {
+      // 用户取消
     });
   }
 });

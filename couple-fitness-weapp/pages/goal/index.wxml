@@ -1,0 +1,87 @@
+<!--目标设置页面-->
+<view class="goal-container">
+  <!-- 周目标设置 -->
+  <view class="goal-section">
+    <view class="section-title">周目标</view>
+    <van-cell-group>
+      <van-field
+        value="{{ weeklyTarget }}"
+        type="number"
+        label="每周打卡次数"
+        placeholder="请输入1-7次"
+        input-align="right"
+        bind:change="onWeeklyTargetChange"
+      >
+        <view slot="button">次</view>
+      </van-field>
+    </van-cell-group>
+    
+    <!-- 周目标进度 -->
+    <view class="progress-section" wx:if="{{ hasWeeklyGoal }}">
+      <view class="progress-header">
+        <text class="progress-label">本周进度</text>
+        <text class="progress-value">{{ weeklyProgress.current }}/{{ weeklyProgress.target }}次</text>
+      </view>
+      <van-progress 
+        percentage="{{ weeklyProgress.percentage }}" 
+        stroke-width="8"
+        color="#FF6B9D"
+        track-color="#FFF5FB"
+      />
+    </view>
+  </view>
+
+  <!-- 月目标设置 -->
+  <view class="goal-section">
+    <view class="section-title">月目标</view>
+    <van-cell-group>
+      <van-field
+        value="{{ monthlyTarget }}"
+        type="number"
+        label="每月运动时长"
+        placeholder="请输入1-3000分钟"
+        input-align="right"
+        bind:change="onMonthlyTargetChange"
+      >
+        <view slot="button">分钟</view>
+      </van-field>
+    </van-cell-group>
+    
+    <!-- 月目标进度 -->
+    <view class="progress-section" wx:if="{{ hasMonthlyGoal }}">
+      <view class="progress-header">
+        <text class="progress-label">本月进度</text>
+        <text class="progress-value">{{ monthlyProgress.current }}/{{ monthlyProgress.target }}分钟</text>
+      </view>
+      <van-progress 
+        percentage="{{ monthlyProgress.percentage }}" 
+        stroke-width="8"
+        color="#FF4081"
+        track-color="#FFF5FB"
+      />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="button-section">
+    <van-button 
+      type="primary" 
+      block 
+      round
+      loading="{{ saving }}"
+      bind:click="onSave"
+    >
+      保存目标
+    </van-button>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips-section">
+    <view class="tip-item">💡 设置合理的目标，让健身更有动力</view>
+    <view class="tip-item">📊 目标完成后会自动记录成就</view>
+    <view class="tip-item">✏️ 可以随时修改目标设置</view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<van-toast id="van-toast" />

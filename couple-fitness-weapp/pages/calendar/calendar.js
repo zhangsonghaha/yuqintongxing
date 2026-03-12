@@ -32,8 +32,8 @@ Page({
     pageSize: 20,
     hasMore: true,
     
-    // 打卡日期集合（用于标记）
-    checkInDates: new Set(),
+    // 打卡日期集合（用于标记）- 使用对象代替Set
+    checkInDates: {},
     
     // 加载状态
     loading: false,
@@ -102,7 +102,7 @@ Page({
         date: dateStr,
         isCurrentMonth: true,
         isToday: dateStr === today,
-        hasCheckIn: this.data.checkInDates.has(dateStr)
+        hasCheckIn: !!this.data.checkInDates[dateStr]  // 使用对象属性检查
       });
     }
     
@@ -135,15 +135,17 @@ Page({
     const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
     
     api.checkInAPI.getCheckInRecords({
-      startDate: startDate,
-      endDate: endDate,
+      beginTime: startDate,  // 修改：使用 beginTime 而不是 startDate
+      endTime: endDate,      // 修改：使用 endTime 而不是 endDate
       pageNum: 1,
       pageSize: 100
     }).then(res => {
-      if (res.code === 200 && res.data && res.data.records) {
-        const dates = new Set();
-        res.data.records.forEach(record => {
-          dates.add(record.checkInDate);
+      if (res.code === 200) {
+        // RuoYi框架返回的分页数据格式：{ rows: [], total: 0 }
+        const records = res.rows || [];
+        const dates = {};  // 使用对象代替Set
+        records.forEach(record => {
+          dates[record.checkInDate] = true;  // 使用对象属性
         });
         
         this.setData({
@@ -190,14 +192,22 @@ Page({
     
     // 如果选择了日期，只查询该日期的记录
     if (this.data.selectedDate) {
-      params.startDate = this.data.selectedDate;
-      params.endDate = this.data.selectedDate;
+      params.beginTime = this.data.selectedDate;
+      params.endTime = this.data.selectedDate;
+      console.log('【日历】加载记录 - 日期筛选:', {
+        selectedDate: this.data.selectedDate,
+        beginTime: params.beginTime,
+        endTime: params.endTime
+      });
     }
     
+    console.log('【日历】API 请求参数:', params);
+    
     api.checkInAPI.getCheckInRecords(params).then(res => {
-      if (res.code === 200 && res.data) {
-        const records = res.data.records || [];
-        const total = res.data.total || 0;
+      if (res.code === 200) {
+        // RuoYi框架返回的分页数据格式：{ rows: [], total: 0 }
+        const records = res.rows || [];
+        const total = res.total || 0;
         
         // 格式化记录数据
         const formattedRecords = records.map(record => {
@@ -284,12 +294,15 @@ Page({
     const date = e.currentTarget.dataset.date;
     const hasCheckIn = e.currentTarget.dataset.hasCheckin;
     
+    console.log('【日历】点击日期:', date);
+    
     this.setData({
       selectedDate: date
+    }, () => {
+      console.log('【日历】selectedDate 已设置为:', this.data.selectedDate);
+      // 重新加载该日期的记录
+      this.loadRecords(true);
     });
-    
-    // 重新加载该日期的记录
-    this.loadRecords(true);
   },
   
   /**

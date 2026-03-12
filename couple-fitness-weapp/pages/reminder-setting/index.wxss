@@ -1,0 +1,63 @@
+.reminder-setting-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* 页面标题 */
+.page-header {
+  background: linear-gradient(135deg, #FF6B9D 0%, #FFA5C0 100%);
+  padding: 60rpx 40rpx 40rpx;
+  color: white;
+}
+
+.header-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 16rpx;
+}
+
+.header-desc {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 设置区块 */
+.setting-section {
+  margin-top: 40rpx;
+}
+
+.section-title {
+  padding: 0 40rpx 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.section-tip {
+  padding: 20rpx 40rpx;
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+}
+
+/* Cell 样式 */
+.cell-title {
+  font-size: 30rpx;
+  color: #333;
+}
+
+/* 订阅区块 */
+.subscribe-section {
+  margin-top: 60rpx;
+  padding: 0 40rpx;
+}
+
+.subscribe-tip {
+  margin-top: 20rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+}

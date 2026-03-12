@@ -114,7 +114,11 @@ Page({
       try {
         const userStatsResponse = await checkInAPI.getStatistics();
         console.log('【首页】用户统计数据响应:', userStatsResponse);
+        console.log('【首页】用户统计数据 - todayCheckedIn:', userStatsResponse.data ? userStatsResponse.data.todayCheckedIn : 'data为空');
+        console.log('【首页】用户统计数据 - todayCheckInTime:', userStatsResponse.data ? userStatsResponse.data.todayCheckInTime : 'data为空');
         userStats = userStatsResponse.data || userStatsResponse;
+        console.log('【首页】解析后的 userStats:', userStats);
+        console.log('【首页】解析后的 todayCheckedIn:', userStats.todayCheckedIn);
       } catch (error) {
         console.error('【首页】获取用户统计数据失败:', error);
         // 使用默认值
@@ -432,11 +436,20 @@ Page({
    */
   onCheckInCardTap(e) {
     const { recordId } = e.detail;
-    // 可以跳转到打卡详情页面（如果有的话）
     console.log('点击打卡记录:', recordId);
-    // wx.navigateTo({
-    //   url: `/pages/checkin/detail?id=${recordId}`
-    // });
+    
+    if (!recordId) {
+      wx.showToast({
+        title: '记录ID不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 跳转到打卡详情页面
+    wx.navigateTo({
+      url: `/pages/checkin-detail/index?recordId=${recordId}`
+    });
   },
 
   /**

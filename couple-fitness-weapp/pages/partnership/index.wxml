@@ -1,4 +1,8 @@
 <view class="partnership-container">
+  <!-- Vant 组件 -->
+  <van-toast id="van-toast" />
+  <van-dialog id="van-dialog" />
+
   <!-- 已配对状态 -->
   <view class="partner-status" wx:if="{{hasPaired}}">
     <view class="status-card">
@@ -13,7 +17,14 @@
           <view class="partner-meta">配对时间: {{partnerInfo.pairedAt || '未知'}}</view>
         </view>
       </view>
-      <button class="btn-dissolve" bindtap="dissolvePartnership">解除配对</button>
+      <van-button 
+        type="default" 
+        block 
+        custom-class="btn-dissolve-vant"
+        bindtap="dissolvePartnership"
+      >
+        解除配对
+      </van-button>
     </view>
   </view>
 
@@ -38,25 +49,44 @@
 
       <!-- 加载状态 -->
       <view class="loading-box" wx:if="{{loading && !inviteCode}}">
-        <view class="loading-spinner"></view>
-        <view class="loading-text">生成中...</view>
+        <van-loading size="48px" color="#FF6B9D">生成中...</van-loading>
       </view>
 
       <view class="invite-code-box" wx:if="{{inviteCode}}">
         <view class="code-label">邀请码</view>
         <view class="code-display">{{inviteCode}}</view>
-        <button class="btn-copy" bindtap="copyInviteCode">复制邀请码</button>
+        <van-button 
+          type="default" 
+          block 
+          custom-class="btn-copy-vant"
+          bindtap="copyInviteCode"
+        >
+          复制邀请码
+        </van-button>
       </view>
 
       <view class="qr-code-box" wx:if="{{qrCodeUrl}}">
         <view class="code-label">二维码</view>
         <image src="{{qrCodeUrl}}" class="qr-code" mode="aspectFit"></image>
-        <button class="btn-save" bindtap="saveQRCode">保存二维码</button>
+        <van-button 
+          type="default" 
+          block 
+          custom-class="btn-save-vant"
+          bindtap="saveQRCode"
+        >
+          保存二维码
+        </van-button>
       </view>
 
-      <button class="btn-primary" bindtap="generateInviteCode" wx:if="{{!inviteCode && !loading}}" loading="{{loading}}">
+      <van-button 
+        type="primary" 
+        block 
+        wx:if="{{!inviteCode && !loading}}" 
+        loading="{{loading}}"
+        bindtap="generateInviteCode"
+      >
         生成邀请码
-      </button>
+      </van-button>
 
       <view class="tip-box" wx:if="{{inviteCode}}">
         <view class="tip-icon">💡</view>
@@ -72,26 +102,27 @@
       <view class="section-desc">输入伴侣的邀请码</view>
 
       <view class="form-group">
-        <view class="input-label">邀请码</view>
-        <input 
-          class="input-field" 
-          placeholder="请输入6位邀请码" 
+        <van-field
+          value="{{ inputInviteCode }}"
+          label="邀请码"
+          placeholder="请输入6位邀请码"
           maxlength="6"
-          bindinput="onInviteCodeInput"
-          value="{{inputInviteCode}}"
-          type="text"
+          bind:change="onInviteCodeInput"
+          border="{{ true }}"
+          custom-style="background-color: #fff;"
         />
         <view class="input-hint">邀请码为6位字母或数字组合</view>
       </view>
 
-      <button 
-        class="btn-primary" 
-        bindtap="sendPartnershipRequest" 
+      <van-button 
+        type="primary" 
+        block 
         loading="{{loading}}"
         disabled="{{loading || inputInviteCode.length !== 6}}"
+        bindtap="sendPartnershipRequest"
       >
         发送配对请求
-      </button>
+      </van-button>
     </view>
   </view>
 
@@ -103,8 +134,7 @@
 
       <!-- 加载状态 -->
       <view class="loading-box" wx:if="{{loadingRequests}}">
-        <view class="loading-spinner"></view>
-        <view class="loading-text">加载中...</view>
+        <van-loading size="48px" color="#FF6B9D">加载中...</van-loading>
       </view>
 
       <view class="pending-list" wx:if="{{!loadingRequests}}">
@@ -117,30 +147,37 @@
             </view>
           </view>
           <view class="item-actions">
-            <button 
-              class="btn-accept" 
+            <van-button 
+              type="primary" 
+              size="small"
+              custom-class="btn-accept-vant"
               bindtap="acceptRequest" 
               data-id="{{item.partnershipId}}"
               disabled="{{item.processing}}"
+              loading="{{item.processing}}"
             >
-              {{item.processing ? '处理中...' : '接受'}}
-            </button>
-            <button 
-              class="btn-reject" 
+              接受
+            </van-button>
+            <van-button 
+              type="default" 
+              size="small"
+              custom-class="btn-reject-vant"
               bindtap="rejectRequest" 
               data-id="{{item.partnershipId}}"
               disabled="{{item.processing}}"
             >
               拒绝
-            </button>
+            </van-button>
           </view>
         </view>
 
-        <view class="empty-state" wx:if="{{pendingRequests.length === 0}}">
-          <view class="empty-icon">📭</view>
-          <view class="empty-text">暂无配对请求</view>
+        <van-empty 
+          wx:if="{{pendingRequests.length === 0}}"
+          image="search"
+          description="暂无配对请求"
+        >
           <view class="empty-hint">分享你的邀请码给伴侣吧</view>
-        </view>
+        </van-empty>
       </view>
     </view>
   </view>
