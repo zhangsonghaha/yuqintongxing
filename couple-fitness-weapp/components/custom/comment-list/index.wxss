@@ -129,18 +129,39 @@
   word-break: break-all;
 }
 
+.reply-to {
+  color: #1989fa;
+  font-weight: 500;
+}
+
+.reply-to {
+  color: #FF6B9D;
+  font-weight: 500;
+}
+
 .comment-actions {
   display: flex;
-  gap: 16rpx;
+  gap: 32rpx;
   margin-top: 8rpx;
 }
 
+.reply-btn,
 .delete-btn {
   font-size: 24rpx;
-  color: #ff4d4f;
+  color: #999;
   padding: 4rpx 12rpx;
 }
 
+.reply-btn:active {
+  color: #FF6B9D;
+  opacity: 0.8;
+}
+
+.delete-btn {
+  color: #ff4d4f;
+}
+
+.reply-btn:active,
 .delete-btn:active {
   opacity: 0.6;
 }

@@ -154,7 +154,7 @@ Component({
               type: 'like',
               recordId: recordId 
             });
-          } else if (res.msg && res.msg.includes('已经点过赞')) {
+          } else if (res.msg && (res.msg.includes('已经点过赞') || res.msg.includes('重复点赞'))) {
             // 如果提示已经点过赞，保持点赞状态
             console.log('【interaction-bar】已经点过赞，保持点赞状态');
             this.triggerEvent('likechange', { 
@@ -163,8 +163,9 @@ Component({
               likeCount: newLikes
             });
             wx.showToast({
-              title: '已经点过赞了',
-              icon: 'none'
+              title: '你已经点过赞了',
+              icon: 'none',
+              duration: 2000
             });
           } else {
             // 其他错误，回滚状态
@@ -174,7 +175,8 @@ Component({
             });
             wx.showToast({
               title: res.msg || '点赞失败',
-              icon: 'none'
+              icon: 'none',
+              duration: 2000
             });
           }
         }).catch(err => {
@@ -184,10 +186,27 @@ Component({
             isLiked: isLiked,
             likes: this.data.likes - 1
           });
-          wx.showToast({
-            title: '操作失败',
-            icon: 'none'
-          });
+          
+          // 检查是否是重复点赞错误
+          const errorMsg = err.message || err.msg || '';
+          if (errorMsg.includes('已经点过赞') || errorMsg.includes('重复点赞')) {
+            wx.showToast({
+              title: '你已经点过赞了',
+              icon: 'none',
+              duration: 2000
+            });
+            // 保持点赞状态
+            this.setData({
+              isLiked: true,
+              likes: this.data.likes + 1
+            });
+          } else {
+            wx.showToast({
+              title: '操作失败',
+              icon: 'none',
+              duration: 2000
+            });
+          }
         });
       }
     },

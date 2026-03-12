@@ -180,6 +180,16 @@ var interactionAPI = {
     return request.post('/api/interaction/comment?recordId=' + recordId + '&userId=' + userId + '&content=' + encodeURIComponent(content));
   },
   
+  // 回复评论
+  reply: function(recordId, userId, content, replyToId, replyToUserId, replyToUserName) {
+    return request.post('/api/interaction/reply?recordId=' + recordId + 
+      '&userId=' + userId + 
+      '&content=' + encodeURIComponent(content) +
+      '&replyToId=' + replyToId +
+      '&replyToUserId=' + replyToUserId +
+      '&replyToUserName=' + encodeURIComponent(replyToUserName));
+  },
+  
   deleteComment: function(interactionId, userId) {
     return request.del('/api/interaction/comment/' + interactionId + '?userId=' + userId);
   },

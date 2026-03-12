@@ -111,6 +111,18 @@ Component({
     },
 
     /**
+     * 回复评论
+     */
+    onReplyComment(e) {
+      const { interactionId, userId, userName } = e.currentTarget.dataset;
+      this.triggerEvent('replycomment', { 
+        interactionId: interactionId,
+        userId: userId,
+        userName: userName
+      });
+    },
+
+    /**
      * 格式化时间
      */
     formatTime(dateStr) {

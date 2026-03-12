@@ -481,11 +481,17 @@ Page({
     const { recordId } = e.detail;
     console.log('点击评论:', recordId);
     
-    // 使用 Vant Dialog 显示提示
-    Dialog.alert({
-      title: '评论功能',
-      message: '评论功能正在开发中，敬请期待！\n\n即将支持：\n• 发表评论\n• 查看评论列表\n• 删除自己的评论\n• 快捷回复',
-      confirmButtonText: '知道了'
+    // 跳转到打卡详情页面
+    if (!recordId) {
+      wx.showToast({
+        title: '记录ID不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.navigateTo({
+      url: `/pages/checkin-detail/index?recordId=${recordId}`
     });
   },
 

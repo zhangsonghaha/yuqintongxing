@@ -7,10 +7,21 @@ Page({
     record: null,
     loading: true,
     comments: [],
-    showDeleteDialog: false
+    showDeleteDialog: false,
+    currentUserId: null,
+    // 回复模式相关
+    replyMode: false,
+    replyToId: null,
+    replyToUserId: null,
+    replyToUserName: '',
+    replyPlaceholder: '说点什么...'
   },
 
   onLoad(options) {
+    // 获取当前用户ID
+    const currentUserId = wx.getStorageSync('userId');
+    this.setData({ currentUserId: currentUserId });
+    
     if (options.recordId) {
       this.setData({ recordId: options.recordId });
       this.loadCheckInDetail();
@@ -40,6 +51,10 @@ Page({
           // 判断是否是自己的记录
           const currentUserId = wx.getStorageSync('userId');
           record.isOwn = (record.userId === currentUserId);
+          
+          console.log('[详情页] 打卡记录加载成功:', record);
+          console.log('[详情页] 点赞状态 hasLiked:', record.hasLiked);
+          console.log('[详情页] 点赞数量:', record.likeCount);
           
           this.setData({
             record: record,
@@ -121,6 +136,58 @@ Page({
     const record = this.data.record;
     record.commentCount = (record.commentCount || 0) + 1;
     this.setData({ record });
+    
+    // 如果是回复模式,取消回复模式
+    if (this.data.replyMode) {
+      this.cancelReply();
+    }
+  },
+
+  /**
+   * 回复评论
+   */
+  onReplyComment(e) {
+    const { interactionId, userId, userName } = e.currentTarget.dataset;
+    console.log('[详情页] 回复评论 - 从dataset读取:', { interactionId, userId, userName });
+    
+    // 确保所有值都有效
+    if (!interactionId || !userId || !userName) {
+      console.error('[详情页] 回复评论参数无效:', { interactionId, userId, userName });
+      wx.showToast({
+        title: '回复参数错误',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    this.setData({
+      replyMode: true,
+      replyToId: interactionId,
+      replyToUserId: userId,
+      replyToUserName: userName,
+      replyPlaceholder: `回复 @${userName}`
+    });
+    
+    console.log('[详情页] 回复模式已设置:', this.data);
+    
+    // 滚动到评论输入框
+    wx.pageScrollTo({
+      selector: '.comment-input-wrapper',
+      duration: 300
+    });
+  },
+
+  /**
+   * 取消回复
+   */
+  cancelReply() {
+    this.setData({
+      replyMode: false,
+      replyToId: null,
+      replyToUserId: null,
+      replyToUserName: '',
+      replyPlaceholder: '说点什么...'
+    });
   },
 
   /**
@@ -179,7 +246,7 @@ Page({
    */
   onDeleteComment(e) {
     const { interactionId } = e.currentTarget.dataset;
-    const currentUserId = wx.getStorageSync('userId');
+    const currentUserId = this.data.currentUserId;
 
     wx.showModal({
       title: '确认删除',

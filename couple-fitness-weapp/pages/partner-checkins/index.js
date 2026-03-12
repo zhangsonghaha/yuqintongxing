@@ -79,6 +79,11 @@ Page({
       
       console.log('【对方打卡记录】解析后的记录数:', records.length);
       
+      // 如果返回空数据,可能是隐私设置关闭了
+      if (records.length === 0 && !isLoadMore) {
+        Toast.fail('对方已关闭打卡记录查看权限');
+      }
+      
       // 格式化记录
       const formattedRecords = this.formatRecords(records);
       
@@ -193,14 +198,19 @@ Page({
    */
   onComment(e) {
     const { recordId } = e.detail;
+    console.log('点击评论:', recordId);
     
-    // 使用 Vant Dialog 显示提示
-    Dialog.alert({
-      title: '评论功能',
-      message: '评论功能正在开发中，敬请期待！\n\n即将支持：\n• 发表评论\n• 查看评论列表\n• 删除自己的评论\n• 快捷回复',
-      confirmButtonText: '知道了'
-    }).then(() => {
-      console.log('用户点击了确认');
+    // 跳转到打卡详情页面
+    if (!recordId) {
+      wx.showToast({
+        title: '记录ID不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.navigateTo({
+      url: `/pages/checkin-detail/index?recordId=${recordId}`
     });
   },
 

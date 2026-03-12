@@ -34,10 +34,24 @@
             <text class="nickname">{{item.nickname || '用户'}}</text>
             <text class="time">{{formatTime(item.createdAt)}}</text>
           </view>
-          <text class="comment-text">{{item.content}}</text>
-          <view class="comment-actions" wx:if="{{item.userId === currentUserId}}">
+          <!-- 显示回复关系 -->
+          <text class="comment-text" wx:if="{{item.replyToUserName}}">
+            回复 <text class="reply-to">@{{item.replyToUserName}}</text>: {{item.content}}
+          </text>
+          <text class="comment-text" wx:else>{{item.content}}</text>
+          <view class="comment-actions">
+            <text 
+              class="reply-btn" 
+              data-interaction-id="{{item.interactionId}}"
+              data-user-id="{{item.userId}}"
+              data-user-name="{{item.nickname}}"
+              bindtap="onReplyComment"
+            >
+              回复
+            </text>
             <text 
               class="delete-btn" 
+              wx:if="{{item.userId === currentUserId}}"
               data-interaction-id="{{item.interactionId}}"
               bindtap="onDeleteComment"
             >

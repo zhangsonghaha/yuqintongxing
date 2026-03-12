@@ -13,7 +13,12 @@
       confirm-type="send"
       bindconfirm="onSend"
     />
-    <view class="char-count">{{commentText.length}}/500</view>
+    <view class="input-actions">
+      <view class="emoji-btn" bindtap="toggleEmojiPanel">
+        <text class="emoji-icon">😊</text>
+      </view>
+      <view class="char-count">{{commentText.length}}/500</view>
+    </view>
   </view>
   
   <button 
@@ -24,3 +29,60 @@
     发送
   </button>
 </view>
+
+<!-- 表情面板 -->
+<view class="emoji-panel {{showEmojiPanel ? 'show' : ''}}" catchtap="stopPropagation">
+  <view class="emoji-header">
+    <text class="emoji-title">选择表情</text>
+    <text class="emoji-close" bindtap="closeEmojiPanel">×</text>
+  </view>
+  <scroll-view class="emoji-list" scroll-y>
+    <view class="emoji-category">
+      <view class="category-title">常用表情</view>
+      <view class="emoji-grid">
+        <view 
+          class="emoji-item" 
+          wx:for="{{commonEmojis}}" 
+          wx:key="index"
+          bindtap="onSelectEmoji"
+          data-emoji="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+    
+    <view class="emoji-category">
+      <view class="category-title">运动健身</view>
+      <view class="emoji-grid">
+        <view 
+          class="emoji-item" 
+          wx:for="{{fitnessEmojis}}" 
+          wx:key="index"
+          bindtap="onSelectEmoji"
+          data-emoji="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+    
+    <view class="emoji-category">
+      <view class="category-title">爱心表情</view>
+      <view class="emoji-grid">
+        <view 
+          class="emoji-item" 
+          wx:for="{{loveEmojis}}" 
+          wx:key="index"
+          bindtap="onSelectEmoji"
+          data-emoji="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 遮罩层 -->
+<view class="emoji-mask {{showEmojiPanel ? 'show' : ''}}" bindtap="closeEmojiPanel"></view>

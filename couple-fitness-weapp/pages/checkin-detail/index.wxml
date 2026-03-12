@@ -107,21 +107,36 @@
       <view class="section-title">评论 ({{ comments.length }})</view>
       <view class="comment-item" wx:for="{{ comments }}" wx:key="interactionId">
         <view class="comment-header">
-          <image class="comment-avatar" src="{{ item.userAvatar || '../../assets/images/default-avatar.png' }}" />
+          <image class="comment-avatar" src="{{ item.avatar || '../../assets/images/default-avatar.png' }}" />
           <view class="comment-info">
-            <text class="comment-user">{{ item.userName || '用户' }}</text>
+            <text class="comment-user">{{ item.nickname || '用户' }}</text>
             <text class="comment-time">{{ item.createdAt }}</text>
           </view>
-          <van-icon 
-            wx:if="{{ item.userId === record.userId }}" 
-            name="delete-o" 
-            size="16px" 
-            color="#999" 
+        </view>
+        <!-- 显示回复关系 -->
+        <view class="comment-content">
+          <text wx:if="{{ item.replyToUserName }}" class="reply-to">回复 @{{ item.replyToUserName }}: </text>
+          <text>{{ item.content }}</text>
+        </view>
+        <view class="comment-actions">
+          <text 
+            class="action-btn reply-btn" 
+            data-interaction-id="{{ item.interactionId }}"
+            data-user-id="{{ item.userId }}"
+            data-user-name="{{ item.nickname }}"
+            bindtap="onReplyComment"
+          >
+            回复
+          </text>
+          <text 
+            wx:if="{{ item.userId === currentUserId }}" 
+            class="action-btn delete-btn"
             data-interaction-id="{{ item.interactionId }}"
             bindtap="onDeleteComment"
-          />
+          >
+            删除
+          </text>
         </view>
-        <view class="comment-content">{{ item.content }}</view>
       </view>
     </view>
 
@@ -130,11 +145,23 @@
       <van-empty description="还没有评论，快来抢沙发吧~" />
     </view>
 
+    <!-- 回复模式提示 -->
+    <view class="reply-mode-tip" wx:if="{{ replyMode }}">
+      <text class="reply-tip-text">回复 @{{ replyToUserName }}</text>
+      <van-icon name="cross" size="16px" bindtap="cancelReply" />
+    </view>
+
     <!-- 评论输入 -->
-    <view class="comment-input-section">
+    <view class="comment-input-wrapper">
       <comment-input 
         recordId="{{ record.recordId }}"
+        placeholder="{{ replyPlaceholder }}"
+        replyMode="{{ replyMode }}"
+        replyToId="{{ replyToId }}"
+        replyToUserId="{{ replyToUserId }}"
+        replyToUserName="{{ replyToUserName }}"
         bind:commentsuccess="onCommentSuccess"
+        bind:cancelreply="cancelReply"
         bind:interactionupdate="onInteractionUpdate"
       />
     </view>

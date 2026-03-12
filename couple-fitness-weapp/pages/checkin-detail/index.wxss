@@ -228,3 +228,65 @@
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
   z-index: 100;
 }
+
+/* 评论操作按钮 */
+.comment-actions {
+  display: flex;
+  gap: 32rpx;
+  margin-top: 16rpx;
+  padding-left: 80rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  color: #999;
+  padding: 8rpx 0;
+}
+
+.reply-btn:active,
+.delete-btn:active {
+  opacity: 0.6;
+}
+
+.delete-btn {
+  color: #ff4d4f;
+}
+
+/* 回复关系显示 */
+.reply-to {
+  color: #FF6B9D;
+  font-weight: 500;
+}
+
+/* 回复模式提示 */
+.reply-mode-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 32rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FFA5C0 100%);
+  color: #fff;
+  font-size: 28rpx;
+  margin: 0 -32rpx 24rpx -32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 157, 0.2);
+}
+
+.reply-tip-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+.reply-mode-tip van-icon {
+  color: #fff;
+  padding: 8rpx;
+  opacity: 0.9;
+}
+
+.reply-mode-tip van-icon:active {
+  opacity: 0.6;
+}
+
+/* 评论输入包装器 */
+.comment-input-wrapper {
+  margin-top: 32rpx;
+}
