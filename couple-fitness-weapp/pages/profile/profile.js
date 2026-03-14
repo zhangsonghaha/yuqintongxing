@@ -155,16 +155,6 @@ Page({
   },
 
   /**
-   * 设置
-   */
-  settings() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
-
-  /**
    * 退出登录
    */
   logout() {

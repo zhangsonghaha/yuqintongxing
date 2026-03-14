@@ -7,6 +7,19 @@ let isRefreshing = false;
 let refreshSubscribers = [];
 
 /**
+ * 统一显示错误提示
+ * 优先使用后端返回的 msg，fallback 到默认文字
+ */
+function showError(msg, defaultMsg) {
+  const text = (msg && msg !== 'undefined') ? msg : (defaultMsg || '操作失败');
+  wx.showToast({
+    title: text,
+    icon: 'none',
+    duration: 2500
+  });
+}
+
+/**
  * 订阅令牌刷新
  */
 function subscribeTokenRefresh(callback) {
@@ -124,6 +137,7 @@ function request(url, options) {
               // 业务错误
               const errorMsg = res.data.msg || res.data.message || '操作失败';
               console.error('【网络请求】业务错误:', errorMsg);
+              showError(errorMsg);
               reject(new Error(errorMsg));
             }
           } else {
@@ -174,6 +188,7 @@ function request(url, options) {
             url: fullUrl,
             errorMsg: errorMsg
           });
+          showError(errorMsg);
           reject(new Error(errorMsg));
         }
       },
@@ -186,9 +201,13 @@ function request(url, options) {
         
         // 判断是否是网络连接失败
         if (err.errMsg && err.errMsg.indexOf('fail') !== -1) {
-          reject(new Error('无法连接到服务器，请检查：\n1. 后端服务是否启动\n2. 网络连接是否正常\n3. 服务器地址是否正确'));
+          const msg = '无法连接到服务器，请检查网络';
+          showError(msg);
+          reject(new Error(msg));
         } else {
-          reject(new Error('网络请求失败，请检查网络连接'));
+          const msg = '网络请求失败，请检查网络连接';
+          showError(msg);
+          reject(new Error(msg));
         }
       }
     });

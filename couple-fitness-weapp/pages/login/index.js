@@ -26,54 +26,37 @@ Page({
   },
 
   /**
-   * 微信登录
+   * 微信授权回调（open-type="getUserInfo" 触发）
+   * 新版微信基础库不再弹授权框，e.detail.userInfo 可能为空，直接用 wx.login 登录即可
    */
-  onWechatLogin() {
-    console.log('点击了登录按钮');
+  onGetUserInfo(e) {
     this.setData({ loading: true });
+    const userInfo = e.detail.userInfo || null;
 
-    // 同时发起 wx.login 和 wx.getUserProfile
-    // 注意：wx.getUserProfile 必须在用户的直接点击事件中调用
-    let code = null;
-    let userInfo = null;
-    let completed = 0;
-
-    // 第一步：获取授权码
     wx.login({
       success: (loginRes) => {
-        console.log('wx.login 成功，code:', loginRes.code);
-        code = loginRes.code;
-        completed++;
-        if (completed === 2 && code && userInfo) {
-          this.handleWechatLogin(code, userInfo);
-        }
+        this.handleWechatLogin(loginRes.code, userInfo);
       },
       fail: (err) => {
-        console.log('wx.login 失败:', err);
+        console.error('wx.login 失败:', err);
         this.setData({ loading: false });
         this.showError('登录失败，请重试');
       }
     });
+  },
 
-    // 第二步：获取用户信息（必须在用户点击事件中调用）
-    wx.getUserProfile({
-      desc: '用于完善用户信息',
-      success: (userRes) => {
-        console.log('用户授权成功，userInfo:', userRes.userInfo);
-        userInfo = userRes.userInfo;
-        completed++;
-        if (completed === 2 && code && userInfo) {
-          this.handleWechatLogin(code, userInfo);
-        }
+  /**
+   * 处理微信登录（已废弃的 onWechatLogin 保留兼容）
+   */
+  onWechatLogin() {
+    this.setData({ loading: true });
+    wx.login({
+      success: (loginRes) => {
+        this.handleWechatLogin(loginRes.code, null);
       },
       fail: (err) => {
-        console.log('用户拒绝授权:', err);
         this.setData({ loading: false });
-        wx.showToast({
-          title: '已取消授权',
-          icon: 'none',
-          duration: 1500
-        });
+        this.showError('登录失败，请重试');
       }
     });
   },
@@ -82,15 +65,12 @@ Page({
    * 处理微信登录
    */
   handleWechatLogin(code, userInfo) {
-    console.log('handleWechatLogin 被调用，code:', code);
     const loginData = {
       code: code,
-      nickname: userInfo.nickName,
-      avatar: userInfo.avatarUrl,
-      gender: userInfo.gender // 0: 未知, 1: 男, 2: 女
+      nickname: userInfo ? userInfo.nickName : null,
+      avatar: userInfo ? userInfo.avatarUrl : null,
+      gender: userInfo ? userInfo.gender : null
     };
-
-    console.log('发起登录请求，数据:', loginData);
     request.post(api.authAPI.wechatLogin, loginData)
       .then((response) => {
         console.log('登录请求成功，响应:', response);

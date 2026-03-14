@@ -104,7 +104,19 @@
   <view class="tab-content" wx:if="{{activeTab === 'join' && !hasPaired}}">
     <view class="section">
       <view class="section-title">加入伴侣</view>
-      <view class="section-desc">输入伴侣的邀请码</view>
+      <view class="section-desc">扫描伴侣的二维码，或手动输入邀请码</view>
+
+      <!-- 扫一扫按钮 -->
+      <view class="scan-btn" bindtap="scanQRCode">
+        <text class="scan-icon">📷</text>
+        <text class="scan-text">扫描伴侣二维码</text>
+      </view>
+
+      <view class="divider-row">
+        <view class="divider-line"></view>
+        <text class="divider-text">或手动输入</text>
+        <view class="divider-line"></view>
+      </view>
 
       <view class="form-group">
         <van-field

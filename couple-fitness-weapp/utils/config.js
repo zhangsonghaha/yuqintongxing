@@ -24,7 +24,7 @@ const config = {
 
 // 当前环境 (development | test | production)
 // 修改这里可以切换环境
-const ENV = 'development';
+const ENV = 'test';
 
 // 导出当前环境的配置
 module.exports = {

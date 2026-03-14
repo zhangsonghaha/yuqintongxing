@@ -42,7 +42,10 @@ Page({
           
           this.setData({
             hasPaired: true,
-            partnerInfo: res.data
+            partnerInfo: {
+              ...res.data,
+              pairedAt: res.data.pairedAt ? res.data.pairedAt.substring(0, 10) : '未知'
+            }
           });
         } else {
           // 未配对
@@ -131,6 +134,58 @@ Page({
         });
       }
     });
+  },
+
+  /**
+   * 扫描二维码
+   */
+  scanQRCode() {
+    wx.scanCode({
+      onlyFromCamera: false,
+      scanType: ['qrCode'],
+      success: (res) => {
+        // 二维码内容就是邀请码（6位）
+        const raw = (res.result || '').trim().toUpperCase();
+        // 兼容二维码内容是纯邀请码或带前缀的 URL
+        const code = raw.length === 6 ? raw : raw.replace(/.*[?&]code=([A-Z0-9]{6}).*/i, '$1');
+        
+        if (!code || code.length !== 6) {
+          wx.showToast({ title: '无效的二维码', icon: 'none' });
+          return;
+        }
+
+        this.setData({ inputInviteCode: code });
+        // 自动发起配对请求
+        this.sendPartnershipRequestWithCode(code);
+      },
+      fail: (err) => {
+        if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
+          wx.showToast({ title: '扫码失败，请重试', icon: 'none' });
+        }
+      }
+    });
+  },
+
+  /**
+   * 用指定邀请码发起配对请求（扫码后直接调用）
+   */
+  sendPartnershipRequestWithCode(code) {
+    this.setData({ loading: true });
+
+    request.post(api.partnership.request, { inviteCode: code })
+      .then(res => {
+        if (res.code === 200) {
+          wx.showToast({ title: '配对请求已发送', icon: 'success' });
+          this.setData({ inputInviteCode: '' });
+          setTimeout(() => {
+            this.switchTab({ currentTarget: { dataset: { tab: 'pending' } } });
+          }, 1000);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.setData({ loading: false });
+      });
   },
 
   /**

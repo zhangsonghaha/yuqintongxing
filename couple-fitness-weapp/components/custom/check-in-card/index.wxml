@@ -46,6 +46,7 @@
   <!-- 互动栏 -->
   <interaction-bar 
     recordId="{{ record.recordId }}"
+    recordOwnerId="{{ record.userId }}"
     likeCount="{{ record.likeCount || 0 }}"
     commentCount="{{ record.commentCount || 0 }}"
     hasLiked="{{ record.hasLiked || false }}"

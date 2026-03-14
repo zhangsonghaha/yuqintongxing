@@ -13,52 +13,46 @@ Page({
     avatarText: '用',
     genderOptions: ['保密', '男', '女'],
     genderIndex: 0,
-    today: '',
+    // 弹窗控制
+    showGender: false,
+    showBirthday: false,
+    // 生日时间戳（van-datetime-picker 需要）
+    birthdayTimestamp: Date.now(),
+    minDate: new Date(1900, 0, 1).getTime(),
+    maxDate: Date.now(),
     saving: false
   },
 
   onLoad() {
-    // 获取今天的日期
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    
-    this.setData({
-      today: `${year}-${month}-${day}`
-    });
-
     this.loadUserInfo();
   },
 
-  /**
-   * 加载用户信息
-   */
   loadUserInfo() {
     const userInfo = storage.getUserInfo() || {};
-    
-    // 设置性别索引（后端：0=保密, 1=男, 2=女）
-    let genderIndex = 0; // 默认保密
-    if (userInfo.gender === 1 || userInfo.gender === '1') {
-      genderIndex = 1; // 男
-    } else if (userInfo.gender === 2 || userInfo.gender === '2') {
-      genderIndex = 2; // 女
-    }
 
-    // 计算头像文字（昵称首字母）
+    let genderIndex = 0;
+    if (userInfo.gender === 1 || userInfo.gender === '1') genderIndex = 1;
+    else if (userInfo.gender === 2 || userInfo.gender === '2') genderIndex = 2;
+
     const nickname = userInfo.nickname || '用户';
     const avatarText = nickname.substring(0, 1).toUpperCase();
 
+    // 将生日字符串转为时间戳
+    let birthdayTimestamp = Date.now();
+    if (userInfo.birthday) {
+      const ts = new Date(userInfo.birthday).getTime();
+      if (!isNaN(ts)) birthdayTimestamp = ts;
+    }
+
     this.setData({
-      userInfo: userInfo,
-      avatarText: avatarText,
-      genderIndex: genderIndex
+      userInfo,
+      avatarText,
+      genderIndex,
+      birthdayTimestamp
     });
   },
 
-  /**
-   * 选择头像
-   */
+  // ---- 头像 ----
   chooseAvatar() {
     wx.chooseMedia({
       count: 1,
@@ -66,117 +60,107 @@ Page({
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath;
-        this.uploadAvatar(tempFilePath);
+        this.uploadAvatar(res.tempFiles[0].tempFilePath);
       },
-      fail: (err) => {
-        console.error('选择图片失败:', err);
-        Toast.fail('选择图片失败');
-      }
+      fail: () => Toast.fail('选择图片失败')
     });
   },
 
-  /**
-   * 上传头像
-   */
   uploadAvatar(filePath) {
     wx.showLoading({ title: '上传中...' });
-
     const token = wx.getStorageSync('token');
-    
+
     wx.uploadFile({
       url: UPLOAD_URL + '/api/user/avatar',
-      filePath: filePath,
+      filePath,
       name: 'file',
-      header: {
-        'Authorization': 'Bearer ' + token
-      },
+      header: { 'Authorization': 'Bearer ' + token },
       success: (res) => {
         wx.hideLoading();
-        
         try {
           const data = JSON.parse(res.data);
           if (data.code === 200) {
-            const avatarUrl = data.data;
-            this.setData({
-              'userInfo.avatar': avatarUrl
-            });
+            this.setData({ 'userInfo.avatar': data.data });
             Toast.success('头像上传成功');
           } else {
             Toast.fail(data.msg || '上传失败');
           }
         } catch (e) {
-          console.error('解析响应失败:', e);
           Toast.fail('上传失败');
         }
       },
-      fail: (err) => {
+      fail: () => {
         wx.hideLoading();
-        console.error('上传头像失败:', err);
         Toast.fail('上传失败');
       }
     });
   },
 
-  /**
-   * 昵称输入
-   */
+  // ---- 昵称 ----
   onNicknameInput(e) {
-    const nickname = e.detail.value;
-    const avatarText = nickname ? nickname.substring(0, 1).toUpperCase() : '用';
-    
+    const nickname = e.detail;
     this.setData({
       'userInfo.nickname': nickname,
-      avatarText: avatarText
+      avatarText: nickname ? nickname.substring(0, 1).toUpperCase() : '用'
     });
   },
 
-  /**
-   * 性别选择
-   */
-  onGenderChange(e) {
-    const index = parseInt(e.detail.value);
-    const genderValue = index; // 0: 保密, 1: 男, 2: 女
-    
+  // ---- 性别 ----
+  showGenderPicker() {
+    this.setData({ showGender: true });
+  },
+
+  onGenderClose() {
+    this.setData({ showGender: false });
+  },
+
+  onGenderConfirm(e) {
+    const index = e.detail.index;
     this.setData({
       genderIndex: index,
-      'userInfo.gender': genderValue
+      'userInfo.gender': index,
+      showGender: false
     });
   },
 
-  /**
-   * 生日选择
-   */
-  onBirthdayChange(e) {
+  // ---- 生日 ----
+  showBirthdayPicker() {
+    this.setData({ showBirthday: true });
+  },
+
+  onBirthdayClose() {
+    this.setData({ showBirthday: false });
+  },
+
+  onBirthdayConfirm(e) {
+    const date = new Date(e.detail);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
     this.setData({
-      'userInfo.birthday': e.detail.value
+      'userInfo.birthday': `${y}-${m}-${d}`,
+      birthdayTimestamp: e.detail,
+      showBirthday: false
     });
   },
 
-  /**
-   * 个性签名输入
-   */
+  // ---- 签名 ----
   onSignatureInput(e) {
-    this.setData({
-      'userInfo.signature': e.detail.value
-    });
+    this.setData({ 'userInfo.signature': e.detail });
   },
 
-  /**
-   * 保存资料
-   */
+  // ---- 保存 ----
   saveProfile() {
+    if (this.data.saving) return;
     const { userInfo } = this.data;
 
-    // 验证昵称
-    if (!userInfo.nickname || userInfo.nickname.trim() === '') {
+    if (!userInfo.nickname || !userInfo.nickname.trim()) {
       Toast.fail('请输入昵称');
       return;
     }
 
     this.setData({ saving: true });
 
-    // 调用更新接口
     api.coupleUserAPI.updateProfile({
       nickname: userInfo.nickname,
       gender: userInfo.gender,
@@ -185,23 +169,15 @@ Page({
       avatar: userInfo.avatar
     }).then(res => {
       this.setData({ saving: false });
-      
       if (res.code === 200) {
-        // 更新本地存储
         storage.setUserInfo(userInfo);
-        
         Toast.success('保存成功');
-        
-        // 延迟返回，让用户看到成功提示
-        setTimeout(() => {
-          wx.navigateBack();
-        }, 1500);
+        setTimeout(() => wx.navigateBack(), 1500);
       } else {
         Toast.fail(res.msg || '保存失败');
       }
-    }).catch(err => {
+    }).catch(() => {
       this.setData({ saving: false });
-      console.error('保存资料失败:', err);
       Toast.fail('保存失败');
     });
   }

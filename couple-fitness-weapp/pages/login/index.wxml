@@ -4,7 +4,6 @@
     <text class="title">与钦同行</text>
     <text class="subtitle">一起运动，一起成长</text>
   </view>
-x`
   <view class="login-content">
     <view class="login-card">
       <text class="card-title">微信授权登录</text>
@@ -12,7 +11,8 @@ x`
 
       <button 
         class="wechat-login-btn {{loading ? 'loading' : ''}}"
-        bind:tap="onWechatLogin"
+        open-type="getUserInfo"
+        bindgetuserinfo="onGetUserInfo"
         disabled="{{loading}}"
       >
         {{loading ? '登录中...' : '微信授权登录'}}

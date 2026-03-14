@@ -94,6 +94,7 @@
     <view class="interaction-section">
       <interaction-bar 
         recordId="{{ record.recordId }}"
+        recordOwnerId="{{ record.userId }}"
         hasLiked="{{ record.hasLiked }}"
         likeCount="{{ record.likeCount }}"
         commentCount="{{ record.commentCount }}"

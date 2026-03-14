@@ -8,6 +8,10 @@ Component({
       type: Number,
       value: 0
     },
+    recordOwnerId: {
+      type: Number,
+      value: 0
+    },
     likeCount: {
       type: Number,
       value: 0
@@ -31,17 +35,8 @@ Component({
 
   lifetimes: {
     attached() {
-      // 获取用户信息
       const userInfo = wx.getStorageSync('userInfo');
       const userId = userInfo ? userInfo.userId : null;
-      
-      console.log('【interaction-bar】组件初始化:', {
-        userId: userId,
-        recordId: this.properties.recordId,
-        hasLiked: this.properties.hasLiked,
-        likeCount: this.properties.likeCount
-      });
-      
       this.setData({
         currentUserId: userId,
         isLiked: this.properties.hasLiked,
@@ -74,18 +69,19 @@ Component({
      * 点赞/取消点赞
      */
     onLike() {
-      const { recordId, currentUserId, isLiked } = this.data;
-      
-      console.log('【interaction-bar】点赞操作:', {
-        recordId: recordId,
-        currentUserId: currentUserId,
-        isLiked: isLiked
-      });
-      
+      const { recordId, recordOwnerId, currentUserId, isLiked } = this.data;
+
       if (!currentUserId) {
+        wx.showToast({ title: '请先登录', icon: 'none' });
+        return;
+      }
+
+      // 不能给自己的打卡记录点赞
+      if (recordOwnerId && currentUserId === recordOwnerId) {
         wx.showToast({
-          title: '请先登录',
-          icon: 'none'
+          title: '不能给自己的打卡点赞哦',
+          icon: 'none',
+          duration: 2000
         });
         return;
       }

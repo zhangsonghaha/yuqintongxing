@@ -683,3 +683,51 @@
 .form-group .van-field {
   margin-bottom: 8px;
 }
+
+/* 扫一扫按钮 */
+.scan-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B9D 0%, #E84C7A 100%);
+  border-radius: 20rpx;
+  padding: 40rpx 0;
+  margin-bottom: 32rpx;
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.35);
+}
+
+.scan-btn:active {
+  opacity: 0.85;
+}
+
+.scan-icon {
+  font-size: 64rpx;
+  margin-bottom: 12rpx;
+}
+
+.scan-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1rpx;
+}
+
+/* 分割线 */
+.divider-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1rpx;
+  background-color: #EEEEEE;
+}
+
+.divider-text {
+  font-size: 24rpx;
+  color: #999999;
+  padding: 0 20rpx;
+}
