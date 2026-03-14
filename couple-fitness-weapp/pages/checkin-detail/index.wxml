@@ -10,7 +10,7 @@
     <!-- 用户信息 -->
     <view class="user-section">
       <view class="user-info">
-        <image class="user-avatar" src="{{ record.userAvatar || '../../assets/images/default-avatar.png' }}" />
+        <image class="user-avatar" src="{{ record.userAvatar || '/images/default-avatar.jpg' }}" />
         <view class="user-details">
           <text class="user-name">{{ record.userName || '用户' }}</text>
           <text class="check-in-time">{{ record.checkInDate }} {{ record.createdAt }}</text>
@@ -107,7 +107,7 @@
       <view class="section-title">评论 ({{ comments.length }})</view>
       <view class="comment-item" wx:for="{{ comments }}" wx:key="interactionId">
         <view class="comment-header">
-          <image class="comment-avatar" src="{{ item.avatar || '../../assets/images/default-avatar.png' }}" />
+          <image class="comment-avatar" src="{{ item.avatar || '/images/default-avatar.jpg' }}" />
           <view class="comment-info">
             <text class="comment-user">{{ item.nickname || '用户' }}</text>
             <text class="comment-time">{{ item.createdAt }}</text>

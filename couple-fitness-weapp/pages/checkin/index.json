@@ -1,6 +1,16 @@
 {
   "navigationBarTitleText": "打卡",
-  "navigationBarBackgroundColor": "#667eea",
+  "navigationBarBackgroundColor": "#FF6B9D",
   "navigationBarTextStyle": "white",
-  "backgroundColor": "#667eea"
+  "backgroundColor": "#FF6B9D",
+  "usingComponents": {
+    "van-toast": "@vant/weapp/toast/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-action-sheet": "@vant/weapp/action-sheet/index"
+  }
 }

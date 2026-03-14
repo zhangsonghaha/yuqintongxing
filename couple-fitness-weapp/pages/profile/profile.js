@@ -130,10 +130,18 @@ Page({
       return;
     }
     
-    wx.showModal({
-      title: '伴侣信息',
-      content: `昵称: ${this.data.partnerInfo.nickname || '未知'}\nID: ${this.data.partnerInfo.partnerId || '未知'}`,
-      showCancel: false
+    // 跳转到伴侣主页,传递伴侣ID
+    const partnerId = this.data.partnerInfo.partnerId || this.data.partnerInfo.userId;
+    if (!partnerId) {
+      wx.showToast({
+        title: '伴侣信息不完整',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.navigateTo({
+      url: `/pages/partner-profile/index?partnerId=${partnerId}`
     });
   },
 

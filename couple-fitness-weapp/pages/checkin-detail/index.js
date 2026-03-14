@@ -108,20 +108,37 @@ Page({
    * 点赞/取消点赞
    */
   onLikeChange(e) {
-    const { hasLiked } = e.detail;
+    const { isLiked, likeCount } = e.detail;
     const record = this.data.record;
     
-    if (hasLiked) {
-      // 点赞
-      record.likeCount = (record.likeCount || 0) + 1;
-      record.hasLiked = true;
-    } else {
-      // 取消点赞
-      record.likeCount = Math.max((record.likeCount || 0) - 1, 0);
-      record.hasLiked = false;
-    }
+    console.log('[详情页] 点赞状态变化:', { 
+      isLiked, 
+      likeCount,
+      当前状态: record.hasLiked 
+    });
+    
+    // 直接使用组件传递的最新状态
+    record.hasLiked = isLiked;
+    record.likeCount = likeCount;
     
     this.setData({ record });
+    
+    console.log('[详情页] 更新后的点赞状态:', { 
+      hasLiked: record.hasLiked, 
+      likeCount: record.likeCount 
+    });
+  },
+
+  /**
+   * 点击评论按钮
+   */
+  onComment() {
+    console.log('[详情页] 点击评论按钮');
+    // 滚动到评论输入框
+    wx.pageScrollTo({
+      selector: '.comment-input-wrapper',
+      duration: 300
+    });
   },
 
   /**

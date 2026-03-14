@@ -7,6 +7,7 @@
     "pages/checkin/index",
     "pages/checkin-detail/index",
     "pages/partner-checkins/index",
+    "pages/partner-profile/index",
     "pages/notifications/index",
     "pages/calendar/calendar",
     "pages/chat/chat",

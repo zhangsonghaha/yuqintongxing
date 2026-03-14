@@ -8,7 +8,7 @@
     </view>
     <view class="likes-list">
       <view class="like-item" wx:for="{{likes}}" wx:key="interactionId">
-        <image class="avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <image class="avatar" src="{{item.avatar || '/images/default-avatar.jpg'}}" mode="aspectFill" />
         <text class="nickname">{{item.nickname || '用户'}}</text>
       </view>
     </view>
@@ -28,7 +28,7 @@
 
     <view class="comments-list" wx:if="{{comments.length > 0}}">
       <view class="comment-item" wx:for="{{comments}}" wx:key="interactionId">
-        <image class="avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <image class="avatar" src="{{item.avatar || '/images/default-avatar.jpg'}}" mode="aspectFill" />
         <view class="comment-content">
           <view class="comment-header">
             <text class="nickname">{{item.nickname || '用户'}}</text>

@@ -93,6 +93,9 @@ Page({
         console.log('【首页】伴侣信息响应:', partnerRes);
         if (partnerRes.code === 200 && partnerRes.data) {
           partnerInfo = partnerRes.data;
+          // 计算头像文字（取昵称第一个字符）
+          const partnerName = partnerInfo.partnerNickname || partnerInfo.nickname || '对方';
+          partnerInfo.avatarText = partnerName.substring(0, 1);
           // 保存到本地存储
           storage.setPartnerInfo(partnerInfo);
         }
@@ -356,13 +359,7 @@ Page({
    * 打卡
    */
   handleCheckIn() {
-    // 检查是否已打卡
-    if (this.data.todayStatus.userCheckedIn) {
-      Toast.success('今天已打卡');
-      return;
-    }
-    
-    // 导航到打卡页面
+    // 允许一天多次打卡，直接导航到打卡页面
     wx.navigateTo({
       url: '/pages/checkin/index',
       fail: (err) => {
@@ -392,20 +389,44 @@ Page({
   /**
    * 跳转到配对页面
    */
-  goToPartnership(e) {
-    // 阻止事件冒泡
-    if (e) {
-      e.stopPropagation();
-    }
+  goToPartnership() {
     wx.navigateTo({
       url: '/pages/partnership/index'
     });
   },
   
   /**
+   * 跳转到伴侣主页
+   */
+  goToPartnerProfile(e) {
+    const { partnerInfo } = this.data;
+    
+    if (!partnerInfo) {
+      Toast.fail('还没有配对伴侣');
+      return;
+    }
+    
+    // 后端返回的字段是 partnerId，不是 userId
+    const partnerId = partnerInfo.partnerId || partnerInfo.userId;
+    
+    if (!partnerId) {
+      console.error('【首页】partnerId为空:', partnerInfo);
+      Toast.fail('伴侣信息异常');
+      return;
+    }
+    
+    console.log('【首页】跳转到伴侣主页:', { partnerId });
+    
+    // 跳转到伴侣主页
+    wx.navigateTo({
+      url: `/pages/partner-profile/index?partnerId=${partnerId}`
+    });
+  },
+  
+  /**
    * 查看对方的打卡记录
    */
-  goToPartnerCheckIns() {
+  goToPartnerCheckIns(e) {
     const { partnerInfo } = this.data;
     
     if (!partnerInfo) {
@@ -588,6 +609,9 @@ Page({
         const partnerRes = await request.get(api.partnership.partner);
         if (partnerRes.code === 200 && partnerRes.data) {
           partnerInfo = partnerRes.data;
+          // 计算头像文字（取昵称第一个字符）
+          const partnerName = partnerInfo.partnerNickname || partnerInfo.nickname || '对方';
+          partnerInfo.avatarText = partnerName.substring(0, 1);
           // 保存到本地存储
           storage.setPartnerInfo(partnerInfo);
         }

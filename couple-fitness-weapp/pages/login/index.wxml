@@ -1,10 +1,10 @@
 <view class="login-container">
   <view class="login-header">
-    <view class="logo">💪</view>
-    <text class="title">情侣健身打卡</text>
+    <view class="logo"><image src="../../images/logo.jpg"></image></view>
+    <text class="title">与钦同行</text>
     <text class="subtitle">一起运动，一起成长</text>
   </view>
-
+x`
   <view class="login-content">
     <view class="login-card">
       <text class="card-title">微信授权登录</text>

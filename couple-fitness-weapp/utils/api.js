@@ -4,8 +4,7 @@
 
 var request = require('./request');
 
-// API 基础地址
-const BASE_URL = 'http://localhost:8080';
+const { BASE_URL, UPLOAD_URL } = require('./config');
 
 // 认证相关 API
 var authAPI = {
@@ -141,6 +140,11 @@ var achievementAPI = {
   // 获取用户所有成就
   getAchievements: function() {
     return request.get('/api/achievement/list');
+  },
+  
+  // 获取指定用户的成就列表（用于查看伴侣成就）
+  getAchievementsByUserId: function(userId) {
+    return request.get('/api/achievement/user/' + userId);
   },
   
   // 检查并自动解锁成就
@@ -295,6 +299,7 @@ var coupleUserAPI = {
 
 module.exports = {
   BASE_URL: BASE_URL,
+  UPLOAD_URL: UPLOAD_URL,
   authAPI: authAPI,
   userAPI: userAPI,
   checkInAPI: checkInAPI,

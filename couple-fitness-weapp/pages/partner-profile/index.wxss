@@ -1,0 +1,372 @@
+/* 伴侣个人主页样式 */
+
+.partner-profile-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFE5EF 0%, #FFF 30%);
+  padding-bottom: 40rpx;
+}
+
+.loading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.content {
+  padding: 32rpx;
+}
+
+/* 头部信息卡片 */
+.header-card {
+  background: #FFF;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.avatar-section {
+  margin-right: 32rpx;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  border: 4rpx solid #FFE5EF;
+}
+
+.avatar-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FFA8C5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: #FFF;
+  font-weight: bold;
+  border: 4rpx solid #FFE5EF;
+}
+
+.info-section {
+  flex: 1;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF6B9D;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 40rpx;
+  background: #E5E5E5;
+}
+
+/* 数据统计卡片 */
+.data-card {
+  background: #FFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.data-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.data-icon {
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
+}
+
+.data-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF6B9D;
+  margin-bottom: 8rpx;
+}
+
+.data-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 运动类型分布 */
+.distribution-card {
+  background: #FFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+}
+
+.distribution-list {
+  margin-top: 16rpx;
+}
+
+.distribution-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.distribution-label {
+  width: 140rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.distribution-bar {
+  flex: 1;
+  height: 16rpx;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+  margin: 0 16rpx;
+  overflow: hidden;
+}
+
+.distribution-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B9D 0%, #FFA8C5 100%);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.distribution-count {
+  width: 80rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 标签页内容 */
+.achievements-section,
+.checkins-section {
+  padding: 32rpx;
+  min-height: 400rpx;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 隐私提示 */
+.privacy-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400rpx;
+  padding: 40rpx;
+}
+
+.privacy-icon {
+  font-size: 96rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.6;
+}
+
+.privacy-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+.privacy-hint {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* 成就网格 */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.achievement-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx;
+  background: #FFF;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.achievement-item.locked {
+  opacity: 0.5;
+}
+
+.achievement-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 12rpx;
+}
+
+.achievement-icon image {
+  width: 100%;
+  height: 100%;
+}
+
+.icon-placeholder {
+  font-size: 64rpx;
+  filter: grayscale(100%);
+}
+
+.achievement-item.unlocked .icon-placeholder {
+  filter: none;
+}
+
+.achievement-name {
+  font-size: 24rpx;
+  color: #333;
+  text-align: center;
+  margin-bottom: 8rpx;
+}
+
+.achievement-progress {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 打卡记录列表 */
+.checkins-list {
+  margin-bottom: 32rpx;
+}
+
+.checkin-item {
+  display: flex;
+  background: #FFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.checkin-photo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 24rpx;
+}
+
+.checkin-photo-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  background: #F5F5F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  margin-right: 24rpx;
+}
+
+.checkin-info {
+  flex: 1;
+}
+
+.checkin-type {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.checkin-stats {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.checkin-stats .stat {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.checkin-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.checkin-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 查看更多 */
+.view-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8rpx;
+  padding: 24rpx;
+  color: #FF6B9D;
+  font-size: 28rpx;
+}

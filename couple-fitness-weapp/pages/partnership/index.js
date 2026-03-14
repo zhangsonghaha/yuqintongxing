@@ -31,8 +31,15 @@ Page({
   checkPartnershipStatus() {
     request.get(api.partnership.partner)
       .then(res => {
+        console.log('【配对状态】后端返回数据:', res);
+        console.log('【配对状态】res.data:', res.data);
+        
         if (res.code === 200 && res.data) {
           // 已配对
+          console.log('【配对状态】伴侣信息:', res.data);
+          console.log('【配对状态】伴侣头像:', res.data.partnerAvatar);
+          console.log('【配对状态】伴侣昵称:', res.data.partnerNickname);
+          
           this.setData({
             hasPaired: true,
             partnerInfo: res.data

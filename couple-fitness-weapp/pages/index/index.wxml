@@ -60,34 +60,68 @@
     <view class="status-section">
       <view class="status-title">我的状态</view>
       <view class="status-item">
-        <text class="status-label">今天状态</text>
-        <text class="status-value">{{ todayStatus.userCheckedIn ? '✓ 已打卡' : '⏰ 未打卡' }}</text>
+        <text class="status-label">今日打卡</text>
+        <text class="status-value">{{ userStats.todayCheckInCount || 0 }}次</text>
       </view>
       <view class="status-item" wx:if="{{ todayStatus.userCheckInTime }}">
-        <text class="status-label">打卡时间</text>
+        <text class="status-label">最近打卡</text>
         <text class="status-value">{{ todayStatus.userCheckInTime }}</text>
       </view>
     </view>
     
     <!-- 对方状态 -->
-    <view class="status-section" bindtap="goToPartnerCheckIns">
+    <view class="status-section partner-section">
       <view class="status-title">对方的状态</view>
-      <view wx:if="{{ partnerInfo }}">
-        <view class="status-item">
-          <text class="status-label">{{ partnerInfo.partnerNickname || partnerInfo.nickname || '对方' }}</text>
-          <text class="status-value">{{ todayStatus.partnerCheckedIn ? '✓ 已打卡' : '⏰ 未打卡' }}</text>
+      <view wx:if="{{ partnerInfo }}" class="partner-info-card">
+        <!-- 伴侣头像和基本信息 - 点击跳转到伴侣主页 -->
+        <view class="partner-header" bindtap="goToPartnerProfile">
+          <image 
+            wx:if="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}" 
+            class="partner-avatar" 
+            src="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}" 
+            mode="aspectFill"
+          />
+          <view wx:else class="partner-avatar-placeholder">
+            <text>{{partnerInfo.avatarText}}</text>
+          </view>
+          <view class="partner-info">
+            <view class="partner-name">{{ partnerInfo.partnerNickname || partnerInfo.nickname || '对方' }}</view>
+            <view class="partner-status">
+              <text class="status-badge {{todayStatus.partnerCheckedIn ? 'checked' : 'unchecked'}}">
+                今日{{ partnerStats.todayCheckInCount || 0 }}次
+              </text>
+              <text wx:if="{{ todayStatus.partnerCheckInTime }}" class="check-time">最近 {{ todayStatus.partnerCheckInTime }}</text>
+            </view>
+          </view>
+          <van-icon name="arrow" class="arrow-icon" />
         </view>
-        <view class="status-item" wx:if="{{ todayStatus.partnerCheckInTime }}">
-          <text class="status-label">打卡时间</text>
-          <text class="status-value">{{ todayStatus.partnerCheckInTime }}</text>
+        
+        <!-- 本周对比数据 -->
+        <view class="partner-stats" wx:if="{{partnerStats}}">
+          <view class="stat-compare-item">
+            <text class="stat-label">本周打卡</text>
+            <text class="stat-value">{{partnerStats.weeklyCheckIns || 0}}次</text>
+          </view>
+          <view class="stat-compare-item">
+            <text class="stat-label">运动时长</text>
+            <text class="stat-value">{{partnerStats.weeklyDuration || 0}}分钟</text>
+          </view>
+          <view class="stat-compare-item">
+            <text class="stat-label">消耗卡路里</text>
+            <text class="stat-value">{{partnerStats.weeklyCalories || 0}}卡</text>
+          </view>
         </view>
-        <view class="status-hint">
-          <text class="hint-text">点击查看TA的打卡记录 ></text>
+        
+        <!-- 查看打卡记录按钮 -->
+        <view class="partner-actions">
+          <button class="btn-view-records" bindtap="goToPartnerCheckIns">
+            查看TA的打卡记录
+          </button>
         </view>
       </view>
       <view wx:else class="no-partner">
         <text class="no-partner-text">还没有配对伴侣</text>
-        <button class="btn-go-pair" bindtap="goToPartnership" catchtap="goToPartnership">去配对</button>
+        <button class="btn-go-pair" bindtap="goToPartnership">去配对</button>
       </view>
     </view>
     

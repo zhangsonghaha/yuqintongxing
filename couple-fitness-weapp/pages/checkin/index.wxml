@@ -1,110 +1,118 @@
-<view class="checkin-container">
-  <!-- 已打卡提示 -->
-  <view wx:if="{{todayCheckIn}}" class="already-checked-in">
-    <view class="success-icon">✓</view>
-    <view class="success-text">今日已打卡</view>
-    <view class="success-detail">{{todayCheckIn.exerciseType}} · {{todayCheckIn.duration}}分钟</view>
-  </view>
+<van-toast id="van-toast" />
 
-  <!-- 打卡表单 -->
-  <view wx:else class="checkin-form">
+<view class="checkin-container">
+  <!-- 打卡表单 (支持一天多次打卡) -->
+  <view class="checkin-form">
     <!-- 运动类型选择 -->
-    <view class="form-section">
-      <view class="section-title">运动类型</view>
-      <view class="exercise-type-selector">
-        <picker 
-          mode="selector" 
-          range="{{exerciseTypes}}"
-          bindchange="onExerciseTypeChange"
-          value="{{exerciseTypeIndex}}"
-        >
-          <view class="picker-value">
-            {{checkInForm.exerciseType || '选择运动类型'}}
-            <text class="arrow">›</text>
-          </view>
-        </picker>
-      </view>
-    </view>
+    <van-cell-group title="运动类型" inset>
+      <van-cell 
+        title="{{checkInForm.exerciseType || '选择运动类型'}}" 
+        is-link 
+        bind:click="showExerciseTypePicker"
+      />
+    </van-cell-group>
 
     <!-- 运动时长输入 -->
-    <view class="form-section">
-      <view class="section-title">运动时长</view>
-      <view class="duration-input-group">
-        <input 
-          type="number" 
-          placeholder="输入分钟数"
-          value="{{checkInForm.duration}}"
-          bindinput="onDurationInput"
-          class="duration-input"
-        />
-        <view class="duration-unit">分钟</view>
-      </view>
-    </view>
+    <van-cell-group title="运动时长" inset custom-class="duration-group">
+      <van-field
+        type="number"
+        value="{{ checkInForm.duration }}"
+        placeholder="输入分钟数"
+        bind:change="onDurationInput"
+        right-icon="clock-o"
+        maxlength="4"
+        input-align="left"
+      >
+        <view slot="button" class="duration-unit">分钟</view>
+      </van-field>
+    </van-cell-group>
 
     <!-- 卡路里显示 -->
-    <view class="form-section">
-      <view class="section-title">预计消耗</view>
-      <view class="calories-display">
-        <view class="calories-value">{{estimatedCalories}}</view>
-        <view class="calories-unit">卡路里</view>
-      </view>
-    </view>
+    <van-cell-group title="预计消耗" inset>
+      <van-cell>
+        <view class="calories-display">
+          <text class="calories-value">{{estimatedCalories}}</text>
+          <text class="calories-unit">卡路里</text>
+        </view>
+      </van-cell>
+    </van-cell-group>
 
     <!-- 位置信息 -->
-    <view class="form-section">
-      <view class="section-title">
-        <text>打卡位置</text>
-        <text class="refresh-btn" bindtap="refreshLocation" wx:if="{{checkInForm.location}}">刷新</text>
-      </view>
-      <view class="location-display">
-        <view wx:if="{{isGettingLocation}}" class="location-loading">
-          <text class="loading-icon">📍</text>
-          <text>正在获取位置...</text>
-        </view>
-        <view wx:elif="{{checkInForm.location}}" class="location-info">
-          <text class="location-icon">📍</text>
-          <text class="location-text">{{checkInForm.location}}</text>
-        </view>
-        <view wx:else class="location-empty" bindtap="getLocation">
-          <text class="location-icon">📍</text>
-          <text class="location-text">点击获取位置</text>
-        </view>
-      </view>
-    </view>
+    <van-cell-group title="打卡位置" inset>
+      <van-cell 
+        wx:if="{{isGettingLocation}}"
+        title="正在获取位置..."
+        icon="location-o"
+      />
+      <van-cell 
+        wx:elif="{{checkInForm.location}}"
+        title="{{checkInForm.location}}"
+        icon="location"
+        is-link
+        bind:click="refreshLocation"
+      />
+      <van-cell 
+        wx:else
+        title="点击获取位置"
+        icon="location-o"
+        is-link
+        bind:click="getLocation"
+      />
+    </van-cell-group>
 
     <!-- 图片上传 -->
-    <view class="form-section">
-      <view class="section-title">打卡照片</view>
-      <view class="photo-upload">
-        <view wx:if="{{checkInForm.photoUrl}}" class="photo-preview">
-          <image src="{{checkInForm.photoUrl}}" mode="aspectFill" />
-          <view class="delete-btn" bindtap="deletePhoto">删除</view>
+    <van-cell-group title="打卡照片" inset>
+      <van-cell>
+        <view class="photo-upload">
+          <view wx:if="{{!checkInForm.photoUrl}}" class="upload-buttons">
+            <van-button 
+              icon="photograph" 
+              type="default" 
+              size="small"
+              custom-class="photo-btn"
+              bind:click="takePhoto"
+              disabled="{{isUploading}}"
+            >
+              拍照
+            </van-button>
+            <van-button 
+              icon="photo" 
+              type="default" 
+              size="small"
+              custom-class="photo-btn"
+              bind:click="chooseFromAlbum"
+              disabled="{{isUploading}}"
+            >
+              相册
+            </van-button>
+          </view>
+          
+          <view wx:if="{{checkInForm.photoUrl}}" class="photo-preview">
+            <image src="{{checkInForm.photoUrl}}" mode="aspectFill" class="preview-image" />
+            <van-icon 
+              name="cross" 
+              class="delete-icon" 
+              bind:click="deletePhoto"
+            />
+          </view>
+          
+          <van-loading wx:if="{{isUploading}}" type="spinner" size="24px">上传中...</van-loading>
         </view>
-        <view wx:else class="photo-buttons">
-          <button class="photo-btn camera-btn" bindtap="takePhoto" disabled="{{isUploading}}">
-            <text class="icon">📷</text>
-            <text>拍照</text>
-          </button>
-          <button class="photo-btn album-btn" bindtap="chooseFromAlbum" disabled="{{isUploading}}">
-            <text class="icon">🖼️</text>
-            <text>相册</text>
-          </button>
-        </view>
-        <view wx:if="{{isUploading}}" class="uploading-tip">上传中...</view>
-      </view>
-    </view>
+      </van-cell>
+    </van-cell-group>
 
     <!-- 备注输入 -->
-    <view class="form-section">
-      <view class="section-title">备注（可选）</view>
-      <textarea 
+    <van-cell-group title="备注（可选）" inset>
+      <van-field
+        type="textarea"
+        value="{{ checkInForm.notes }}"
         placeholder="记录你的运动感受..."
-        value="{{checkInForm.notes}}"
-        bindinput="onNotesInput"
-        class="notes-textarea"
+        bind:change="onNotesInput"
+        autosize
         maxlength="200"
+        show-word-limit
       />
-    </view>
+    </van-cell-group>
 
     <!-- 提交按钮 -->
     <view class="form-actions">
@@ -122,3 +130,13 @@
     </view>
   </view>
 </view>
+
+<!-- 运动类型选择器 -->
+<van-action-sheet
+  show="{{ showExerciseTypeSheet }}"
+  actions="{{ exerciseTypeActions }}"
+  bind:select="onExerciseTypeSelect"
+  bind:close="onExerciseTypeClose"
+  cancel-text="取消"
+  description="选择运动类型"
+/>

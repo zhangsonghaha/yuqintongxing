@@ -114,6 +114,12 @@ Component({
               type: 'unlike',
               recordId: recordId 
             });
+            // 显示取消点赞成功提示
+            wx.showToast({
+              title: '已取消点赞',
+              icon: 'success',
+              duration: 1500
+            });
           } else {
             // 回滚状态
             this.setData({
@@ -122,7 +128,8 @@ Component({
             });
             wx.showToast({
               title: res.msg || '取消点赞失败',
-              icon: 'none'
+              icon: 'none',
+              duration: 2000
             });
           }
         }).catch(err => {
@@ -134,7 +141,8 @@ Component({
           });
           wx.showToast({
             title: '操作失败',
-            icon: 'none'
+            icon: 'none',
+            duration: 2000
           });
         });
       } else {
@@ -153,6 +161,12 @@ Component({
             this.triggerEvent('interactionupdate', { 
               type: 'like',
               recordId: recordId 
+            });
+            // 显示点赞成功提示
+            wx.showToast({
+              title: '点赞成功',
+              icon: 'success',
+              duration: 1500
             });
           } else if (res.msg && (res.msg.includes('已经点过赞') || res.msg.includes('重复点赞'))) {
             // 如果提示已经点过赞，保持点赞状态

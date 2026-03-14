@@ -4,6 +4,7 @@
 
 const storage = require('../../utils/storage');
 const api = require('../../utils/api');
+const { UPLOAD_URL } = require('../../utils/config');
 import Toast from '@vant/weapp/toast/toast';
 
 Page({
@@ -84,7 +85,7 @@ Page({
     const token = wx.getStorageSync('token');
     
     wx.uploadFile({
-      url: api.BASE_URL + '/api/user/avatar',
+      url: UPLOAD_URL + '/api/user/avatar',
       filePath: filePath,
       name: 'file',
       header: {

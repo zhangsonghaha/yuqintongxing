@@ -11,9 +11,14 @@
         <view class="status-text">已配对</view>
       </view>
       <view class="partner-info">
-        <image src="{{partnerInfo.avatar || '/assets/default-avatar.png'}}" class="partner-avatar"></image>
+        <view class="partner-avatar-wrapper">
+          <image wx:if="{{partnerInfo.partnerAvatar}}" src="{{partnerInfo.partnerAvatar}}" class="partner-avatar"></image>
+          <view wx:else class="partner-avatar-placeholder">
+            <text class="avatar-text">{{partnerInfo.partnerNickname ? partnerInfo.partnerNickname.substring(0, 1) : '伴'}}</text>
+          </view>
+        </view>
         <view class="partner-details">
-          <view class="partner-name">{{partnerInfo.nickname || '伴侣'}}</view>
+          <view class="partner-name">{{partnerInfo.partnerNickname || '伴侣'}}</view>
           <view class="partner-meta">配对时间: {{partnerInfo.pairedAt || '未知'}}</view>
         </view>
       </view>
@@ -140,7 +145,12 @@
       <view class="pending-list" wx:if="{{!loadingRequests}}">
         <view class="pending-item" wx:for="{{pendingRequests}}" wx:key="partnershipId">
           <view class="item-header">
-            <image src="{{item.partnerAvatar || '/assets/default-avatar.png'}}" class="avatar"></image>
+            <view class="avatar-wrapper">
+              <image wx:if="{{item.partnerAvatar}}" src="{{item.partnerAvatar}}" class="avatar"></image>
+              <view wx:else class="avatar-placeholder">
+                <text class="avatar-text-small">{{item.partnerNickname ? item.partnerNickname.substring(0, 1) : '用'}}</text>
+              </view>
+            </view>
             <view class="item-info">
               <view class="nickname">{{item.partnerNickname}}</view>
               <view class="time">{{item.createdAt || '刚刚'}}请求配对</view>

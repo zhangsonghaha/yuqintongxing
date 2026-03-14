@@ -1,5 +1,6 @@
 const app = getApp();
 const { request } = require('../../utils/request');
+const { BASE_URL } = require('../../utils/config');
 const realtimeUpdater = require('../../utils/realtime');
 const location = require('../../utils/location');
 const api = require('../../utils/api');
@@ -21,6 +22,10 @@ Page({
     exerciseTypes: ['跑步', '游泳', '骑行', '瑜伽', '健身', '篮球', '足球', '羽毛球', '乒乓球', '散步'],
     exerciseTypeIndex: 0,
     
+    // Vant ActionSheet 数据
+    showExerciseTypeSheet: false,
+    exerciseTypeActions: [],
+    
     // UI状态
     estimatedCalories: 0,
     isUploading: false,
@@ -30,12 +35,20 @@ Page({
   },
 
   onLoad() {
-    this.checkTodayCheckIn();
+    // 移除检查今日是否已打卡的限制,支持一天多次打卡
     this.getLocation(); // 自动获取位置
+    
+    // 初始化运动类型选择器数据
+    const exerciseTypeActions = this.data.exerciseTypes.map(type => ({
+      name: type
+    }));
+    this.setData({
+      exerciseTypeActions: exerciseTypeActions
+    });
   },
 
   onShow() {
-    this.checkTodayCheckIn();
+    // 移除检查今日是否已打卡的限制,支持一天多次打卡
   },
 
   /**
@@ -96,29 +109,60 @@ Page({
   },
 
   /**
-   * 检查今日是否已打卡
+   * 检查今日是否已打卡 (已废弃 - 支持一天多次打卡)
    */
-  checkTodayCheckIn() {
-    request({
-      url: '/api/checkin/today',
-      method: 'GET'
-    }).then(res => {
-      if (res.data) {
-        this.setData({
-          todayCheckIn: res.data
-        });
-        wx.showToast({
-          title: '今日已打卡',
-          icon: 'success'
-        });
-      }
-    }).catch(err => {
-      // 今日未打卡,继续
+  // checkTodayCheckIn() {
+  //   request({
+  //     url: '/api/checkin/today',
+  //     method: 'GET'
+  //   }).then(res => {
+  //     if (res.data) {
+  //       this.setData({
+  //         todayCheckIn: res.data
+  //       });
+  //       wx.showToast({
+  //         title: '今日已打卡',
+  //         icon: 'success'
+  //       });
+  //     }
+  //   }).catch(err => {
+  //     // 今日未打卡,继续
+  //   });
+  // },
+
+  /**
+   * 显示运动类型选择器
+   */
+  showExerciseTypePicker() {
+    this.setData({
+      showExerciseTypeSheet: true
     });
   },
 
   /**
    * 选择运动类型
+   */
+  onExerciseTypeSelect(e) {
+    const { name, index } = e.detail;
+    this.setData({
+      'checkInForm.exerciseType': name,
+      exerciseTypeIndex: index,
+      showExerciseTypeSheet: false
+    });
+    this.calculateCalories();
+  },
+
+  /**
+   * 关闭运动类型选择器
+   */
+  onExerciseTypeClose() {
+    this.setData({
+      showExerciseTypeSheet: false
+    });
+  },
+
+  /**
+   * 选择运动类型 (旧方法,保留兼容)
    */
   onExerciseTypeChange(e) {
     const index = e.detail.value;
@@ -134,7 +178,16 @@ Page({
    * 输入运动时长
    */
   onDurationInput(e) {
-    const duration = e.detail.value;
+    let duration = e.detail.value || e.detail;
+    
+    // 只保留数字
+    duration = duration.toString().replace(/[^\d]/g, '');
+    
+    // 限制最大值为9999分钟
+    if (duration && parseInt(duration) > 9999) {
+      duration = '9999';
+    }
+    
     this.setData({
       'checkInForm.duration': duration
     });
@@ -257,7 +310,6 @@ Page({
           return;
         }
         
-        const BASE_URL = 'http://localhost:8080';
         wx.uploadFile({
           url: BASE_URL + '/api/upload/checkin-photo',
           filePath: compressedPath,
@@ -395,27 +447,19 @@ Page({
       
       // 延迟返回首页
       setTimeout(() => {
-        // 检查是否解锁了新成就
-        api.achievementAPI.getAchievements()
-          .then(achievementRes => {
-            if (achievementRes.code === 200 && achievementRes.data && achievementRes.data.length > 0) {
-              // 有成就解锁，跳转到成就页面并显示动画
-              wx.navigateTo({
-                url: '/pages/achievement/index?showAnimation=true'
-              });
-            } else {
-              // 没有成就，返回首页
-              wx.switchTab({
-                url: '/pages/index/index'
-              });
-            }
-          })
-          .catch(() => {
-            // 查询失败，返回首页
-            wx.switchTab({
-              url: '/pages/index/index'
-            });
+        // 检查是否有新解锁的成就
+        if (res.data && res.data.newAchievements && res.data.newAchievements.length > 0) {
+          // 有新成就解锁,跳转到成就页面并显示动画
+          console.log('【打卡成功】解锁了新成就:', res.data.newAchievements);
+          wx.navigateTo({
+            url: '/pages/achievement/index?showAnimation=true'
           });
+        } else {
+          // 没有新成就,返回首页
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
       }, 1500);
     }).catch(err => {
       console.error('【打卡提交】失败:', err);

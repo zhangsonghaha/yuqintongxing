@@ -98,9 +98,9 @@ Page({
         
         // 即使接口失败，也要显示默认数据
         const stats = (statsRes && statsRes.code === 200) ? statsRes.data : {};
-        const unlockedList = (achievementRes && achievementRes.code === 200) ? (achievementRes.data || []) : [];
+        const achievementList = (achievementRes && achievementRes.code === 200) ? (achievementRes.data || []) : [];
         
-        const achievements = this.processAchievements(unlockedList, stats);
+        const achievements = this.processAchievements(achievementList, stats);
         const unlockedCount = achievements.filter(a => a.unlocked).length;
         
         console.log('[成就页面] 处理后的成就数据:', achievements);
@@ -189,20 +189,23 @@ Page({
 
   /**
    * 处理成就数据
-   * 将后端返回的已解锁成就与所有徽章配置合并，并计算进度
+   * 将后端返回的成就列表与徽章配置合并，并计算进度
    */
-  processAchievements: function(unlockedAchievements, stats = {}) {
+  processAchievements: function(achievementList, stats = {}) {
     const achievements = [];
     
     // 遍历所有徽章类型
     for (const badgeType in BADGE_CONFIG) {
       const config = BADGE_CONFIG[badgeType];
       
-      // 查找是否已解锁
-      const unlocked = unlockedAchievements.find(a => a.badgeType === badgeType);
+      // 查找后端返回的成就数据
+      const achievementData = achievementList.find(a => a.badgeType === badgeType);
+      
+      // 判断是否已解锁 - 必须检查 unlocked 字段的值
+      const isUnlocked = achievementData && achievementData.unlocked === true;
       
       // 计算进度
-      const progress = this.calculateProgress(badgeType, stats, !!unlocked);
+      const progress = this.calculateProgress(badgeType, stats, isUnlocked);
       
       achievements.push({
         badgeType: badgeType,
@@ -212,13 +215,13 @@ Page({
         unlockCondition: config.unlockCondition,
         detailedCondition: config.detailedCondition,
         tips: config.tips,
-        unlocked: !!unlocked,
-        unlockedAt: unlocked ? this.formatDate(unlocked.unlockedAt) : null,
+        unlocked: isUnlocked,
+        unlockedAt: isUnlocked && achievementData ? this.formatDate(achievementData.unlockedAt) : null,
         progress: progress.current,
         progressMax: progress.max,
         progressPercent: progress.percent,
         progressText: progress.text,
-        isAlmostUnlocked: progress.percent >= 80 && !unlocked
+        isAlmostUnlocked: progress.percent >= 80 && !isUnlocked
       });
     }
     
