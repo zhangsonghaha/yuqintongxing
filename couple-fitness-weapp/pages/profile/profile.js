@@ -10,7 +10,11 @@ Page({
     userInfo: null,
     avatarText: '用',
     partnerInfo: null,
-    unreadCount: 0
+    unreadCount: 0,
+    daysCount: 0,
+    totalCheckIns: 0,
+    monthCheckIns: 0,
+    achievementCount: 0
   },
   
   onLoad() {
@@ -21,6 +25,7 @@ Page({
     // 每次显示时刷新用户信息和未读通知数
     this.loadUserInfo();
     this.loadUnreadCount();
+    this.loadStats();
   },
 
   /**
@@ -32,16 +37,51 @@ Page({
     const partnerInfo = storage.getPartnerInfo();
     
     if (userInfo) {
-      // 计算头像文字
       const nickname = userInfo.nickname || '用户';
       const avatarText = nickname.substring(0, 1).toUpperCase();
-      
+
+      // 计算在一起天数
+      let daysCount = 0;
+      if (partnerInfo && partnerInfo.pairedAt) {
+        const pairedDate = new Date(partnerInfo.pairedAt.replace(/-/g, '/'));
+        const today = new Date();
+        daysCount = Math.max(1, Math.floor((today - pairedDate) / (1000 * 60 * 60 * 24)) + 1);
+      }
+
       this.setData({
-        userInfo: userInfo,
-        avatarText: avatarText,
-        partnerInfo: partnerInfo
+        userInfo,
+        avatarText,
+        partnerInfo,
+        daysCount
       });
     }
+  },
+
+  /**
+   * 加载统计数据（打卡天数、本月打卡、成就数）
+   */
+  loadStats() {
+    const token = wx.getStorageSync('token');
+    if (!token) return;
+
+    // 用统计接口获取总打卡数和本月打卡数
+    api.checkInAPI.getStatistics().then(res => {
+      if (res.code === 200 && res.data) {
+        this.setData({
+          totalCheckIns: res.data.totalDays || res.data.totalCount || 0,
+          monthCheckIns: res.data.monthDays || res.data.monthCount || 0
+        });
+      }
+    }).catch(() => {});
+
+    // 成就数
+    api.achievementAPI.getAchievements().then(res => {
+      if (res.code === 200) {
+        const list = res.data || [];
+        const unlocked = list.filter(a => a.unlocked).length;
+        this.setData({ achievementCount: unlocked });
+      }
+    }).catch(() => {});
   },
 
   /**

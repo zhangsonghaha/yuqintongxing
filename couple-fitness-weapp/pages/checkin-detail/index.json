@@ -3,13 +3,9 @@
   "navigationBarBackgroundColor": "#FF6B9D",
   "navigationBarTextStyle": "white",
   "usingComponents": {
-    "van-loading": "@vant/weapp/loading/index",
-    "van-icon": "@vant/weapp/icon/index",
-    "van-tag": "@vant/weapp/tag/index",
-    "van-cell": "@vant/weapp/cell/index",
-    "van-dialog": "@vant/weapp/dialog/index",
-    "van-toast": "@vant/weapp/toast/index",
-    "van-empty": "@vant/weapp/empty/index",
+    "van-loading": "/miniprogram_npm/@vant/weapp/loading/index",
+    "van-dialog": "/miniprogram_npm/@vant/weapp/dialog/index",
+    "van-toast": "/miniprogram_npm/@vant/weapp/toast/index",
     "interaction-bar": "/components/custom/interaction-bar/index",
     "comment-input": "/components/custom/comment-input/index"
   }

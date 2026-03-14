@@ -1,175 +1,184 @@
 <!--伴侣个人主页-->
-<view class="partner-profile-container">
+<view class="container">
   <!-- 加载状态 -->
-  <van-loading wx:if="{{loading}}" type="spinner" size="48rpx" class="loading-center">加载中...</van-loading>
-  
-  <view wx:else class="content">
-    <!-- 头部信息卡片 -->
-    <view class="header-card">
-      <view class="avatar-section">
-        <image 
-          wx:if="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}" 
-          class="avatar" 
-          src="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}" 
+  <view wx:if="{{loading}}" class="loading-center">
+    <van-loading type="spinner" size="48rpx" color="#FF6B9D">加载中...</van-loading>
+  </view>
+
+  <view wx:else class="scroll-wrap">
+    <!-- Hero 区域 -->
+    <view class="hero">
+      <view class="hero-avatar">
+        <image
+          wx:if="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}"
+          class="avatar-img"
+          src="{{partnerInfo.partnerAvatar || partnerInfo.avatar}}"
           mode="aspectFill"
         />
         <view wx:else class="avatar-placeholder">
-          <text>{{partnerInfo.avatarText}}</text>
+          <text class="avatar-text">{{partnerInfo.avatarText}}</text>
         </view>
       </view>
-      
-      <view class="info-section">
-        <view class="nickname">{{partnerInfo.partnerNickname || partnerInfo.nickname || '对方'}}</view>
-        <view class="stats-row">
-          <view class="stat-item">
-            <text class="stat-value">{{stats.consecutiveDays}}</text>
-            <text class="stat-label">连续打卡</text>
+      <text class="hero-name">{{partnerInfo.partnerNickname || partnerInfo.nickname || '对方'}}</text>
+      <view class="hero-tag">
+        <text class="hero-tag-icon">♥</text>
+        <text class="hero-tag-text">我的伴侣</text>
+      </view>
+    </view>
+
+    <!-- 三项统计 -->
+    <view class="stats-bar">
+      <view class="stats-item">
+        <text class="stats-value">{{stats.consecutiveDays}}</text>
+        <text class="stats-label">连续打卡</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value">{{stats.totalCheckIns}}</text>
+        <text class="stats-label">累计打卡</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value">{{unlockedCount}}</text>
+        <text class="stats-label">解锁成就</text>
+      </view>
+    </view>
+
+    <view class="section-gap"></view>
+
+    <!-- 运动数据 -->
+    <view class="card">
+      <text class="card-title">运动数据</text>
+      <view class="data-row">
+        <view class="data-item">
+          <view class="data-icon-wrap data-icon-pink">
+            <text class="data-emoji">🔥</text>
           </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item">
-            <text class="stat-value">{{stats.totalCheckIns}}</text>
-            <text class="stat-label">累计打卡</text>
+          <text class="data-value data-pink">{{stats.totalCalories}}</text>
+          <text class="data-label">总卡路里</text>
+        </view>
+        <view class="data-item">
+          <view class="data-icon-wrap data-icon-indigo">
+            <text class="data-emoji">⏱️</text>
           </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item">
-            <text class="stat-value">{{unlockedCount}}</text>
-            <text class="stat-label">解锁成就</text>
+          <text class="data-value data-indigo">{{stats.totalDuration}}</text>
+          <text class="data-label">总时长(分钟)</text>
+        </view>
+        <view class="data-item">
+          <view class="data-icon-wrap data-icon-amber">
+            <text class="data-emoji">🏆</text>
           </view>
+          <text class="data-value data-amber">{{stats.maxConsecutiveDays}}</text>
+          <text class="data-label">最长连续</text>
         </view>
       </view>
     </view>
 
-    <!-- 数据统计卡片 -->
-    <view class="data-card">
-      <view class="card-title">运动数据</view>
-      <view class="data-grid">
-        <view class="data-item">
-          <view class="data-icon">🔥</view>
-          <view class="data-value">{{stats.totalCalories}}</view>
-          <view class="data-label">总卡路里</view>
+    <view class="section-gap"></view>
+
+    <!-- 运动偏好 -->
+    <view class="card" wx:if="{{exerciseDistribution.length > 0}}">
+      <text class="card-title">运动偏好</text>
+      <view class="pref-item" wx:for="{{exerciseDistribution}}" wx:key="type">
+        <text class="pref-label">{{item.type}}</text>
+        <view class="pref-bar-bg">
+          <view class="pref-bar-fill" style="width:{{item.percentage}}%"></view>
         </view>
-        <view class="data-item">
-          <view class="data-icon">⏱️</view>
-          <view class="data-value">{{stats.totalDuration}}</view>
-          <view class="data-label">总时长(分钟)</view>
-        </view>
-        <view class="data-item">
-          <view class="data-icon">🏆</view>
-          <view class="data-value">{{stats.maxConsecutiveDays}}</view>
-          <view class="data-label">最长连续</view>
-        </view>
+        <text class="pref-count">{{item.count}}次</text>
       </view>
     </view>
 
-    <!-- 运动类型分布 -->
-    <view class="distribution-card" wx:if="{{exerciseDistribution.length > 0}}">
-      <view class="card-title">运动偏好</view>
-      <view class="distribution-list">
-        <view class="distribution-item" wx:for="{{exerciseDistribution}}" wx:key="type">
-          <view class="distribution-label">{{item.type}}</view>
-          <view class="distribution-bar">
-            <view class="distribution-fill" style="width: {{item.percentage}}%"></view>
-          </view>
-          <view class="distribution-count">{{item.count}}次</view>
-        </view>
-      </view>
-    </view>
+    <view class="section-gap" wx:if="{{exerciseDistribution.length > 0}}"></view>
 
     <!-- 标签页 -->
-    <van-tabs active="{{activeTab}}" bind:change="onTabChange" color="#FF6B9D">
-      <!-- 成就标签页 -->
-      <van-tab title="成就 ({{unlockedCount}}/{{totalCount}})">
-        <view class="achievements-section">
-          <!-- 隐私提示 -->
-          <view wx:if="{{achievementsHidden}}" class="privacy-notice">
-            <view class="privacy-icon">🔒</view>
-            <view class="privacy-text">对方已设置隐私，无法查看成就</view>
-            <view class="privacy-hint">可以提醒TA在"隐私与安全"中开启</view>
-          </view>
-          
-          <!-- 无成就数据 -->
-          <view wx:elif="{{achievements.length === 0}}" class="empty-state">
-            <text>暂无成就数据</text>
-          </view>
-          
-          <!-- 成就列表 -->
-          <view wx:else class="achievements-grid">
-            <view 
-              class="achievement-item {{item.unlocked ? 'unlocked' : 'locked'}}" 
-              wx:for="{{achievements}}" 
-              wx:key="achievementId"
-              data-achievement="{{item}}"
-              bindtap="onAchievementTap"
-            >
-              <view class="achievement-icon">
-                <image wx:if="{{item.unlocked && item.badgeIcon}}" src="{{item.badgeIcon}}" mode="aspectFit" />
-                <text wx:else class="icon-placeholder">🏅</text>
-              </view>
-              <view class="achievement-name">{{item.badgeName}}</view>
-              <view wx:if="{{!item.unlocked && item.progress !== undefined}}" class="achievement-progress">
-                {{item.currentValue}}/{{item.targetValue}}
-              </view>
-            </view>
-          </view>
-          
-          <view wx:if="{{achievements.length > 0 && !achievementsHidden}}" class="view-more" bindtap="viewAllAchievements">
-            <text>查看全部成就</text>
-            <van-icon name="arrow" />
-          </view>
-        </view>
-      </van-tab>
+    <view class="tab-header">
+      <view class="tab-item {{activeTab == 0 ? 'tab-active' : ''}}" bindtap="onTabChange" data-index="0">
+        <text class="tab-text">成就 ({{unlockedCount}}/{{totalCount}})</text>
+        <view class="tab-line" wx:if="{{activeTab == 0}}"></view>
+      </view>
+      <view class="tab-item {{activeTab == 1 ? 'tab-active' : ''}}" bindtap="onTabChange" data-index="1">
+        <text class="tab-text">打卡记录</text>
+        <view class="tab-line" wx:if="{{activeTab == 1}}"></view>
+      </view>
+    </view>
 
-      <!-- 打卡记录标签页 -->
-      <van-tab title="打卡记录">
-        <view class="checkins-section">
-          <view wx:if="{{recentCheckIns.length === 0}}" class="empty-state">
-            <text>暂无打卡记录</text>
+    <!-- 成就内容 -->
+    <view class="tab-content" wx:if="{{activeTab == 0}}">
+      <view wx:if="{{achievementsHidden}}" class="privacy-notice">
+        <text class="privacy-icon">🔒</text>
+        <text class="privacy-text">对方已设置隐私，无法查看成就</text>
+        <text class="privacy-hint">可以提醒TA在"隐私与安全"中开启</text>
+      </view>
+      <view wx:elif="{{achievements.length === 0}}" class="empty-state">
+        <text>暂无成就数据</text>
+      </view>
+      <view wx:else class="ach-grid">
+        <view
+          class="ach-item {{item.unlocked ? 'ach-unlocked' : 'ach-locked'}}"
+          wx:for="{{achievements}}"
+          wx:key="achievementId"
+          data-achievement="{{item}}"
+          bindtap="onAchievementTap"
+        >
+          <view class="ach-medal-wrap {{item.unlocked ? 'ach-medal-active' : 'ach-medal-inactive'}}">
+            <image wx:if="{{item.unlocked && item.badgeIcon}}" class="ach-medal-img" src="{{item.badgeIcon}}" mode="aspectFit" />
+            <text wx:else class="ach-medal-emoji">{{item.badgeEmoji}}</text>
           </view>
-          
-          <view wx:else class="checkins-list">
-            <view 
-              class="checkin-item" 
-              wx:for="{{recentCheckIns}}" 
-              wx:key="recordId"
-              data-recordid="{{item.recordId}}"
-              bindtap="onCheckInTap"
-            >
-              <image wx:if="{{item.photoUrl}}" class="checkin-photo" src="{{item.photoUrl}}" mode="aspectFill" />
-              <view wx:else class="checkin-photo-placeholder">
-                <text>📷</text>
-              </view>
-              
-              <view class="checkin-info">
-                <view class="checkin-type">{{item.exerciseType}}</view>
-                <view class="checkin-stats">
-                  <text class="stat">⏱️ {{item.duration}}分钟</text>
-                  <text class="stat">🔥 {{item.calories}}卡</text>
-                </view>
-                <view class="checkin-time">{{item.checkInTime}}</view>
-              </view>
-              
-              <view class="checkin-actions">
-                <view class="action-item">
-                  <van-icon name="good-job{{item.hasLiked ? '' : '-o'}}" color="{{item.hasLiked ? '#FF6B9D' : '#999'}}" />
-                  <text>{{item.likeCount || 0}}</text>
-                </view>
-                <view class="action-item">
-                  <van-icon name="chat-o" color="#999" />
-                  <text>{{item.commentCount || 0}}</text>
-                </view>
-              </view>
+          <text class="ach-name {{item.unlocked ? 'ach-name-active' : ''}}">{{item.badgeName}}</text>
+          <text wx:if="{{!item.unlocked && item.progress !== undefined}}" class="ach-progress">{{item.currentValue}}/{{item.targetValue}}</text>
+        </view>
+      </view>
+      <view wx:if="{{achievements.length > 0 && !achievementsHidden}}" class="view-more" bindtap="viewAllAchievements">
+        <text class="view-more-text">查看全部成就</text>
+        <van-icon name="arrow" color="#FF6B9D" size="28rpx" />
+      </view>
+    </view>
+
+    <!-- 打卡记录内容 -->
+    <view class="tab-content" wx:if="{{activeTab == 1}}">
+      <view wx:if="{{recentCheckIns.length === 0}}" class="empty-state">
+        <text>暂无打卡记录</text>
+      </view>
+      <view wx:else>
+        <view
+          class="checkin-item"
+          wx:for="{{recentCheckIns}}"
+          wx:key="recordId"
+          data-recordid="{{item.recordId}}"
+          bindtap="onCheckInTap"
+        >
+          <image wx:if="{{item.photoUrl}}" class="checkin-photo" src="{{item.photoUrl}}" mode="aspectFill" />
+          <view wx:else class="checkin-photo-placeholder">
+            <text class="checkin-photo-emoji">📷</text>
+          </view>
+          <view class="checkin-info">
+            <text class="checkin-type">{{item.exerciseType}}</text>
+            <view class="checkin-stats">
+              <text class="checkin-stat">⏱️ {{item.duration}}分钟</text>
+              <text class="checkin-stat">🔥 {{item.calories}}卡</text>
+            </view>
+            <text class="checkin-time">{{item.checkInTime}}</text>
+          </view>
+          <view class="checkin-actions">
+            <view class="action-item">
+              <van-icon name="good-job{{item.hasLiked ? '' : '-o'}}" color="{{item.hasLiked ? '#FF6B9D' : '#9CA3AF'}}" size="32rpx" />
+              <text class="action-count">{{item.likeCount || 0}}</text>
+            </view>
+            <view class="action-item">
+              <van-icon name="chat-o" color="#9CA3AF" size="32rpx" />
+              <text class="action-count">{{item.commentCount || 0}}</text>
             </view>
           </view>
-          
-          <view wx:if="{{recentCheckIns.length > 0}}" class="view-more" bindtap="viewAllCheckIns">
-            <text>查看全部打卡</text>
-            <van-icon name="arrow" />
-          </view>
         </view>
-      </van-tab>
-    </van-tabs>
+        <view class="view-more" bindtap="viewAllCheckIns">
+          <text class="view-more-text">查看全部打卡</text>
+          <van-icon name="arrow" color="#FF6B9D" size="28rpx" />
+        </view>
+      </view>
+    </view>
+
+    <view style="height:40rpx"></view>
   </view>
 </view>
 
-<!-- Toast -->
 <van-toast id="van-toast" />

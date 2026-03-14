@@ -12,6 +12,10 @@ Component({
       type: String,
       value: '说点什么...'
     },
+    focus: {
+      type: Boolean,
+      value: false
+    },
     // 回复模式相关属性
     replyMode: {
       type: Boolean,
@@ -69,6 +73,7 @@ Component({
       this.setData({
         isFocused: false
       });
+      this.triggerEvent('inputblur');
     },
 
     /**

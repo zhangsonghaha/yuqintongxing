@@ -1,171 +1,171 @@
 <!--pages/checkin-detail/index.wxml-->
-<view class="detail-container">
+<van-toast id="van-toast" />
+
+<view class="page-container">
+
   <!-- 加载中 -->
-  <view class="loading-wrapper" wx:if="{{ loading }}">
+  <view class="loading-wrap" wx:if="{{ loading }}">
     <van-loading size="24px" color="#FF6B9D">加载中...</van-loading>
   </view>
 
   <!-- 详情内容 -->
-  <view class="detail-content" wx:if="{{ !loading && record }}">
-    <!-- 用户信息 -->
-    <view class="user-section">
-      <view class="user-info">
-        <image class="user-avatar" src="{{ record.userAvatar || '/images/default-avatar.jpg' }}" />
-        <view class="user-details">
-          <text class="user-name">{{ record.userName || '用户' }}</text>
-          <text class="check-in-time">{{ record.checkInDate }} {{ record.createdAt }}</text>
-        </view>
-      </view>
-      
-      <!-- 删除按钮(仅自己的打卡记录) -->
-      <van-icon 
-        wx:if="{{ record.isOwn }}" 
-        name="delete-o" 
-        size="20px" 
-        color="#999" 
-        bindtap="handleDelete"
-      />
-    </view>
+  <view wx:if="{{ !loading && record }}" class="page-inner">
 
-    <!-- 运动信息卡片 -->
-    <view class="exercise-card">
-      <view class="exercise-header">
-        <view class="exercise-type">
-          <van-tag type="primary" size="large">{{ record.exerciseType }}</van-tag>
-        </view>
-      </view>
+    <!-- 滚动内容区 -->
+    <scroll-view scroll-y class="scroll-content" scroll-into-view="{{ scrollAnchor }}">
 
-      <view class="exercise-stats">
-        <view class="stat-item">
-          <van-icon name="clock-o" size="18px" color="#FF6B9D" />
-          <text class="stat-value">{{ record.duration }}</text>
-          <text class="stat-label">分钟</text>
-        </view>
-        
-        <view class="stat-divider"></view>
-        
-        <view class="stat-item">
-          <van-icon name="fire-o" size="18px" color="#FF6B9D" />
-          <text class="stat-value">{{ record.calories || 0 }}</text>
-          <text class="stat-label">卡路里</text>
-        </view>
-        
-        <view class="stat-divider" wx:if="{{ record.distance }}"></view>
-        
-        <view class="stat-item" wx:if="{{ record.distance }}">
-          <van-icon name="location-o" size="18px" color="#FF6B9D" />
-          <text class="stat-value">{{ record.distance }}</text>
-          <text class="stat-label">公里</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 打卡照片 -->
-    <view class="photo-section" wx:if="{{ record.photoUrl }}">
-      <view class="section-title">打卡照片</view>
-      <image 
-        class="check-in-photo" 
-        src="{{ record.photoUrl }}" 
-        mode="aspectFill"
-        bindtap="previewPhoto"
-      />
-    </view>
-
-    <!-- 备注 -->
-    <view class="notes-section" wx:if="{{ record.notes }}">
-      <view class="section-title">备注</view>
-      <view class="notes-content">
-        <text>{{ record.notes }}</text>
-      </view>
-    </view>
-
-    <!-- 位置信息 -->
-    <view class="location-section" wx:if="{{ record.location }}">
-      <view class="section-title">打卡位置</view>
-      <van-cell 
-        title="{{ record.location }}" 
-        icon="location-o"
-        is-link
-        bindtap="viewLocation"
-      />
-    </view>
-
-    <!-- 互动栏 -->
-    <view class="interaction-section">
-      <interaction-bar 
-        recordId="{{ record.recordId }}"
-        recordOwnerId="{{ record.userId }}"
-        hasLiked="{{ record.hasLiked }}"
-        likeCount="{{ record.likeCount }}"
-        commentCount="{{ record.commentCount }}"
-        bind:likechange="onLikeChange"
-        bind:comment="onComment"
-      />
-    </view>
-
-    <!-- 评论列表 -->
-    <view class="comments-section" wx:if="{{ comments.length > 0 }}">
-      <view class="section-title">评论 ({{ comments.length }})</view>
-      <view class="comment-item" wx:for="{{ comments }}" wx:key="interactionId">
-        <view class="comment-header">
-          <image class="comment-avatar" src="{{ item.avatar || '/images/default-avatar.jpg' }}" />
-          <view class="comment-info">
-            <text class="comment-user">{{ item.nickname || '用户' }}</text>
-            <text class="comment-time">{{ item.createdAt }}</text>
+      <!-- 用户信息卡片 -->
+      <view class="card user-card">
+        <view class="user-left">
+          <view class="avatar-circle">
+            <image wx:if="{{ record.userAvatar }}" class="avatar-img" src="{{ record.userAvatar }}" mode="aspectFill"/>
+            <text wx:else class="avatar-text">{{ record.isOwn ? '我' : 'TA' }}</text>
+          </view>
+          <view class="user-info">
+            <text class="user-name">{{ record.userName || '微信用户' }}</text>
+            <text class="user-time">{{ record.checkInDate }}  {{ record.createdAt }}</text>
           </view>
         </view>
-        <!-- 显示回复关系 -->
-        <view class="comment-content">
-          <text wx:if="{{ item.replyToUserName }}" class="reply-to">回复 @{{ item.replyToUserName }}: </text>
-          <text>{{ item.content }}</text>
-        </view>
-        <view class="comment-actions">
-          <text 
-            class="action-btn reply-btn" 
-            data-interaction-id="{{ item.interactionId }}"
-            data-user-id="{{ item.userId }}"
-            data-user-name="{{ item.nickname }}"
-            bindtap="onReplyComment"
-          >
-            回复
-          </text>
-          <text 
-            wx:if="{{ item.userId === currentUserId }}" 
-            class="action-btn delete-btn"
-            data-interaction-id="{{ item.interactionId }}"
-            bindtap="onDeleteComment"
-          >
-            删除
-          </text>
+        <view wx:if="{{ record.isOwn }}" class="delete-btn" bindtap="handleDelete">
+          <text class="delete-icon">🗑</text>
         </view>
       </view>
-    </view>
 
-    <!-- 无评论提示 -->
-    <view class="no-comments" wx:if="{{ !loading && comments.length === 0 }}">
-      <van-empty description="还没有评论，快来抢沙发吧~" />
-    </view>
+      <!-- 运动信息卡片 -->
+      <view class="card exercise-card">
+        <view class="exercise-badge">
+          <text class="exercise-badge-txt">{{ record.exerciseEmoji || '🏃' }} {{ record.exerciseType }}</text>
+        </view>
+        <view class="stats-row">
+          <view class="stat-item">
+            <text class="stat-icon">⏱</text>
+            <text class="stat-val">{{ record.duration }}</text>
+            <text class="stat-lbl">分钟</text>
+          </view>
+          <view class="stat-divider"/>
+          <view class="stat-item">
+            <text class="stat-icon">🔥</text>
+            <text class="stat-val">{{ record.calories || 0 }}</text>
+            <text class="stat-lbl">卡路里</text>
+          </view>
+        </view>
+      </view>
 
-    <!-- 回复模式提示 -->
-    <view class="reply-mode-tip" wx:if="{{ replyMode }}">
-      <text class="reply-tip-text">回复 @{{ replyToUserName }}</text>
-      <van-icon name="cross" size="16px" bindtap="cancelReply" />
-    </view>
+      <!-- 打卡照片 -->
+      <view class="card" wx:if="{{ record.photoUrl }}">
+        <view class="section-header">
+          <view class="section-bar"/>
+          <text class="section-title">打卡照片</text>
+        </view>
+        <image class="photo-img" src="{{ record.photoUrl }}" mode="aspectFill" bindtap="previewPhoto"/>
+      </view>
 
-    <!-- 评论输入 -->
-    <view class="comment-input-wrapper">
-      <comment-input 
+      <!-- 备注 -->
+      <view class="card" wx:if="{{ record.notes }}">
+        <view class="section-header">
+          <view class="section-bar"/>
+          <text class="section-title">备注</text>
+        </view>
+        <view class="notes-bg">
+          <text class="notes-txt">{{ record.notes }}</text>
+        </view>
+      </view>
+
+      <!-- 打卡位置 -->
+      <view class="card" wx:if="{{ record.location }}">
+        <view class="section-header">
+          <view class="section-bar"/>
+          <text class="section-title">打卡位置</text>
+        </view>
+        <view class="location-row" bindtap="viewLocation">
+          <text class="location-pin">📍</text>
+          <text class="location-addr">{{ record.location }}</text>
+          <text class="location-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 互动栏 -->
+      <view class="card interaction-card">
+        <interaction-bar
+          recordId="{{ record.recordId }}"
+          recordOwnerId="{{ record.userId }}"
+          hasLiked="{{ record.hasLiked }}"
+          likeCount="{{ record.likeCount }}"
+          commentCount="{{ record.commentCount }}"
+          bind:likechange="onLikeChange"
+          bind:comment="onComment"
+        />
+      </view>
+
+      <!-- 评论列表 -->
+      <view class="card" wx:if="{{ comments.length > 0 }}">
+        <view class="section-header">
+          <view class="section-bar"/>
+          <text class="section-title">评论 ({{ comments.length }})</text>
+        </view>
+        <view class="comment-list">
+          <view class="comment-item" wx:for="{{ comments }}" wx:key="interactionId">
+            <view class="comment-avatar-wrap">
+              <image wx:if="{{ item.avatar }}" class="comment-avatar" src="{{ item.avatar }}" mode="aspectFill"/>
+              <view wx:else class="comment-avatar-placeholder">
+                <text class="comment-avatar-txt">{{ item.nickname ? item.nickname.substring(0,1) : 'U' }}</text>
+              </view>
+            </view>
+            <view class="comment-body">
+              <view class="comment-meta">
+                <text class="comment-name">{{ item.nickname || '用户' }}</text>
+                <text class="comment-time">{{ item.createdAt }}</text>
+              </view>
+              <text class="comment-content">
+                <text wx:if="{{ item.replyToUserName }}" class="reply-to">回复 @{{ item.replyToUserName }}: </text>{{ item.content }}
+              </text>
+              <view class="comment-actions">
+                <text class="action-reply"
+                  data-interaction-id="{{ item.interactionId }}"
+                  data-user-id="{{ item.userId }}"
+                  data-user-name="{{ item.nickname }}"
+                  bindtap="onReplyComment">回复</text>
+                <text wx:if="{{ item.userId === currentUserId }}" class="action-delete"
+                  data-interaction-id="{{ item.interactionId }}"
+                  bindtap="onDeleteComment">删除</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 无评论空状态 -->
+      <view class="empty-comments" wx:if="{{ !loading && comments.length === 0 }}">
+        <text class="empty-emoji">💬</text>
+        <text class="empty-txt">还没有评论，快来抢沙发吧~</text>
+      </view>
+
+      <!-- 回复模式提示 -->
+      <view class="reply-tip" wx:if="{{ replyMode }}">
+        <text class="reply-tip-txt">回复 @{{ replyToUserName }}</text>
+        <text class="reply-tip-close" bindtap="cancelReply">✕</text>
+      </view>
+
+      <view class="scroll-bottom" id="scroll-bottom-anchor"></view>
+    </scroll-view>
+
+    <!-- 底部评论输入栏 -->
+    <view class="input-bar">
+      <comment-input
         recordId="{{ record.recordId }}"
         placeholder="{{ replyPlaceholder }}"
         replyMode="{{ replyMode }}"
         replyToId="{{ replyToId }}"
         replyToUserId="{{ replyToUserId }}"
         replyToUserName="{{ replyToUserName }}"
+        focus="{{ inputFocus }}"
         bind:commentsuccess="onCommentSuccess"
         bind:cancelreply="cancelReply"
         bind:interactionupdate="onInteractionUpdate"
+        bind:inputblur="onInputBlur"
       />
     </view>
+
   </view>
 </view>
 
@@ -181,6 +181,3 @@
   bind:confirm="confirmDelete"
   bind:cancel="cancelDelete"
 />
-
-<!-- Toast -->
-<van-toast id="van-toast" />

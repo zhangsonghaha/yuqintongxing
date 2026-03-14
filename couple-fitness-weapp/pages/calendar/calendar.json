@@ -2,6 +2,9 @@
   "navigationBarTitleText": "打卡日历",
   "navigationBarBackgroundColor": "#FF6B9D",
   "navigationBarTextStyle": "white",
-  "backgroundColor": "#FFF5FB",
-  "usingComponents": {}
+  "backgroundColor": "#F8F8F8",
+  "usingComponents": {
+    "van-loading": "/miniprogram_npm/@vant/weapp/loading/index",
+    "van-toast": "/miniprogram_npm/@vant/weapp/toast/index"
+  }
 }

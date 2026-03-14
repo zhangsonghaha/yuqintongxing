@@ -6,6 +6,7 @@
       type="text"
       placeholder="{{placeholder}}"
       value="{{commentText}}"
+      focus="{{focus}}"
       bindinput="onInput"
       bindfocus="onFocus"
       bindblur="onBlur"

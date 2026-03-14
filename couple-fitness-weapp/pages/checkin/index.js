@@ -7,6 +7,9 @@ const api = require('../../utils/api');
 
 Page({
   data: {
+    statusBarHeight: 0,  // 状态栏高度
+    navBarHeight: 44,    // 导航栏内容区高度（px）
+    menuButtonRight: 16, // 胶囊按钮右边距（px），用于导航栏右侧留白
     // 打卡表单数据
     checkInForm: {
       exerciseType: '',
@@ -18,11 +21,21 @@ Page({
       location: ''
     },
     
-    // 运动类型列表
-    exerciseTypes: ['跑步', '游泳', '骑行', '瑜伽', '健身', '篮球', '足球', '羽毛球', '乒乓球', '散步'],
+    // 运动类型列表（网格选择）
+    exerciseTypeList: [
+      { value: '跑步',   label: '跑步',   emoji: '🏃', bg: '#F5F5F5', color: '#666666', activeBg: '#FFE8F0', activeColor: '#FF6B9D' },
+      { value: '骑行',   label: '骑行',   emoji: '🚴', bg: '#EEF4FF', color: '#5B8DEF', activeBg: '#D6E8FF', activeColor: '#3A6FD8' },
+      { value: '瑜伽',   label: '瑜伽',   emoji: '🧘', bg: '#F0EEFF', color: '#8B6FE8', activeBg: '#DDD6FF', activeColor: '#6B4FD0' },
+      { value: '游泳',   label: '游泳',   emoji: '🏊', bg: '#E8F7FF', color: '#2AABEE', activeBg: '#C8EEFF', activeColor: '#0A8BCC' },
+      { value: '健身房', label: '健身房', emoji: '🏋️', bg: '#FFF3E8', color: '#F5A623', activeBg: '#FFE0B0', activeColor: '#D4860A' },
+      { value: '居家',   label: '居家',   emoji: '🤸', bg: '#EDFFF4', color: '#27AE60', activeBg: '#C8F5DC', activeColor: '#1A8A48' },
+      { value: '户外',   label: '户外',   emoji: '🌿', bg: '#F0FFF4', color: '#2ECC71', activeBg: '#C0F0D4', activeColor: '#18A857' },
+      { value: '力量训练', label: '力量', emoji: '💪', bg: '#FFF0F0', color: '#E74C3C', activeBg: '#FFD0CC', activeColor: '#C0392B' }
+    ],
+    exerciseTypes: ['跑步', '游泳', '骑行', '瑜伽', '健身房', '居家', '户外', '力量训练'],
     exerciseTypeIndex: 0,
-    
-    // Vant ActionSheet 数据
+
+    // Vant ActionSheet 数据（保留兼容）
     showExerciseTypeSheet: false,
     exerciseTypeActions: [],
     
@@ -35,16 +48,27 @@ Page({
   },
 
   onLoad() {
-    // 移除检查今日是否已打卡的限制,支持一天多次打卡
-    this.getLocation(); // 自动获取位置
-    
-    // 初始化运动类型选择器数据
-    const exerciseTypeActions = this.data.exerciseTypes.map(type => ({
-      name: type
-    }));
+    // 获取状态栏高度 + 胶囊按钮信息，适配自定义导航栏
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight || 0;
+    const menuButton = wx.getMenuButtonBoundingClientRect();
+    // 导航栏内容区高度 = 胶囊按钮底部 - 状态栏底部，再加上等量上边距
+    const navBarHeight = (menuButton.bottom - menuButton.top) + (menuButton.top - statusBarHeight) * 2;
+    // 胶囊按钮右侧到屏幕右边的距离，导航栏右侧需要留出同等宽度
+    const menuButtonRight = systemInfo.windowWidth - menuButton.right;
+    // 胶囊按钮自身宽度，用于右侧内容区域宽度
+    const menuButtonWidth = menuButton.width;
+
     this.setData({
-      exerciseTypeActions: exerciseTypeActions
+      statusBarHeight,
+      navBarHeight,
+      menuButtonRight,
+      menuButtonWidth
     });
+
+    this.getLocation();
+    const exerciseTypeActions = this.data.exerciseTypes.map(type => ({ name: type }));
+    this.setData({ exerciseTypeActions });
   },
 
   onShow() {
@@ -131,7 +155,16 @@ Page({
   // },
 
   /**
-   * 显示运动类型选择器
+   * 点击运动类型图标（网格选择）
+   */
+  onExerciseItemTap(e) {
+    const value = e.currentTarget.dataset.value;
+    this.setData({ 'checkInForm.exerciseType': value });
+    this.calculateCalories();
+  },
+
+  /**
+   * 显示运动类型选择器（ActionSheet 备用）
    */
   showExerciseTypePicker() {
     this.setData({
@@ -216,16 +249,10 @@ Page({
     
     // 卡路里估算（每分钟消耗）
     const caloriesPerMinute = {
-      '跑步': 10,
-      '游泳': 11,
-      '骑行': 8,
-      '瑜伽': 3,
-      '健身': 7,
-      '篮球': 9,
-      '足球': 9.5,
-      '羽毛球': 7.5,
-      '乒乓球': 6,
-      '散步': 4
+      '跑步': 10, '游泳': 11, '骑行': 8, '瑜伽': 3,
+      '健身': 7, '健身房': 7, '篮球': 9, '足球': 9.5,
+      '羽毛球': 7.5, '乒乓球': 6, '散步': 4,
+      '居家': 5, '户外': 6, '力量训练': 7
     };
     
     const rate = caloriesPerMinute[exerciseType] || 5;

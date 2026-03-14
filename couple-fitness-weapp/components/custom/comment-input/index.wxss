@@ -2,10 +2,12 @@
 .comment-input-container {
   display: flex;
   align-items: center;
-  padding: 16rpx;
+  padding: 20rpx 24rpx;
   background-color: #fff;
-  border-top: 1rpx solid #e0e0e0;
+  border-top: 1rpx solid #F0F0F0;
   gap: 16rpx;
+  min-height: 100rpx;
+  box-sizing: border-box;
 }
 
 .input-wrapper {
@@ -19,7 +21,7 @@
 
 .input-wrapper.focused {
   background-color: #fff;
-  border: 2rpx solid #07c160;
+  border: 2rpx solid #FF6B9D;
 }
 
 .comment-input {
@@ -39,17 +41,18 @@
 
 .send-btn {
   padding: 12rpx 24rpx;
-  background-color: #e0e0e0;
-  color: #999;
-  border-radius: 24rpx;
+  background-color: #F0F0F0;
+  color: #BBBBBB;
+  border-radius: 48rpx;
   font-size: 28rpx;
   border: none;
-  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .send-btn.active {
-  background-color: #07c160;
-  color: #fff;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF4081 100%);
+  color: #FFFFFF;
 }
 
 .send-btn:active {
@@ -57,8 +60,8 @@
 }
 
 .send-btn[disabled] {
-  background-color: #e0e0e0;
-  color: #999;
+  background-color: #F0F0F0;
+  color: #BBBBBB;
 }
 
 /* 输入框操作区域 */

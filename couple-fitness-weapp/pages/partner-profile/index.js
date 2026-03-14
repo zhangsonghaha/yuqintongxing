@@ -4,6 +4,15 @@
 
 import Toast from '@vant/weapp/toast/toast';
 
+// 与 achievement/index.js 保持一致的徽章配置
+const BADGE_CONFIG = {
+  FIRST_CHECKIN: { icon: '🎯', name: '首次打卡' },
+  STREAK_7:      { icon: '🔥', name: '连续7天' },
+  STREAK_30:     { icon: '💪', name: '连续30天' },
+  TOTAL_100:     { icon: '⭐', name: '累计100次' },
+  COUPLE_GOAL:   { icon: '💑', name: '情侣目标' }
+};
+
 const { checkInAPI, achievementAPI } = require('../../utils/api');
 const storage = require('../../utils/storage');
 
@@ -117,6 +126,11 @@ Page({
         console.log('【伴侣主页】成就数量:', achievements.length);
         
         unlockedCount = achievements.filter(a => a.unlocked).length;
+        // 为每个成就注入对应的 emoji 图标
+        achievements = achievements.map(a => {
+          const cfg = BADGE_CONFIG[a.badgeType] || {};
+          return { ...a, badgeEmoji: cfg.icon || '🏅' };
+        });
         console.log('【伴侣主页】已解锁成就数量:', unlockedCount);
       } catch (error) {
         console.error('【伴侣主页】获取成就数据失败:', error);
@@ -185,7 +199,8 @@ Page({
     const partnerAvatar = partnerInfo.partnerAvatar || partnerInfo.avatar || '';
     
     return records.map(record => {
-      const checkInDate = new Date(record.checkInDate || record.createdAt);
+      const rawDate = record.checkInDate || record.createdAt;
+      const checkInDate = new Date(typeof rawDate === 'string' ? rawDate.replace(' ', 'T') : rawDate);
       const now = new Date();
       const isToday = checkInDate.toDateString() === now.toDateString();
       const yesterday = new Date(now);
@@ -223,7 +238,9 @@ Page({
    */
   formatTime(timestamp) {
     if (!timestamp) return '';
-    const date = new Date(timestamp);
+    const normalized = typeof timestamp === 'string' ? timestamp.replace(' ', 'T') : timestamp;
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return '';
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   },
 
@@ -246,9 +263,9 @@ Page({
    * 切换标签页
    */
   onTabChange(e) {
-    this.setData({
-      activeTab: e.detail.index
-    });
+    // data-index 传来的是字符串，转成数字确保比较正确
+    const index = Number(e.currentTarget.dataset.index);
+    this.setData({ activeTab: index });
   },
 
   /**
@@ -267,10 +284,8 @@ Page({
    * 查看所有成就
    */
   viewAllAchievements() {
-    const { partnerId } = this.data;
-    
     wx.navigateTo({
-      url: `/pages/partner-achievements/index?partnerId=${partnerId}`
+      url: `/pages/achievement/index`
     });
   },
 

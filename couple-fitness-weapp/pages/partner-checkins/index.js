@@ -109,7 +109,8 @@ Page({
     const { partnerName } = this.data;
     
     return records.map(record => {
-      const checkInDate = new Date(record.checkInDate || record.createdAt);
+      const rawDate = record.checkInDate || record.createdAt;
+      const checkInDate = new Date(typeof rawDate === 'string' ? rawDate.replace(' ', 'T') : rawDate);
       const now = new Date();
       const isToday = checkInDate.toDateString() === now.toDateString();
       const yesterday = new Date(now);
@@ -147,7 +148,9 @@ Page({
    */
   formatTime(timestamp) {
     if (!timestamp) return '';
-    const date = new Date(timestamp);
+    const normalized = typeof timestamp === 'string' ? timestamp.replace(' ', 'T') : timestamp;
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return '';
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   },
 

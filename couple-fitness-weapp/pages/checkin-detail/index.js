@@ -9,6 +9,8 @@ Page({
     comments: [],
     showDeleteDialog: false,
     currentUserId: null,
+    scrollAnchor: '',
+    inputFocus: false,
     // 回复模式相关
     replyMode: false,
     replyToId: null,
@@ -42,15 +44,18 @@ Page({
   loadCheckInDetail() {
     this.setData({ loading: true });
     
+    const emojiMap = {
+      '跑步': '🏃', '骑行': '🚴', '瑜伽': '🧘', '游泳': '🏊',
+      '健身房': '🏋️', '居家': '🤸', '户外': '🌿', '力量训练': '💪', '力量': '💪'
+    };
+    
     api.checkInAPI.getCheckInById(this.data.recordId)
       .then(res => {
         if (res.code === 200 && res.data) {
-          // 处理数据,添加必要的字段
           const record = res.data;
-          
-          // 判断是否是自己的记录
           const currentUserId = wx.getStorageSync('userId');
           record.isOwn = (record.userId === currentUserId);
+          record.exerciseEmoji = emojiMap[record.exerciseType] || '🏃';
           
           console.log('[详情页] 打卡记录加载成功:', record);
           console.log('[详情页] 点赞状态 hasLiked:', record.hasLiked);
@@ -130,15 +135,18 @@ Page({
   },
 
   /**
-   * 点击评论按钮
+   * 点击评论按钮 - 聚焦到输入框并滚动到底部
    */
   onComment() {
     console.log('[详情页] 点击评论按钮');
-    // 滚动到评论输入框
-    wx.pageScrollTo({
-      selector: '.comment-input-wrapper',
-      duration: 300
-    });
+    this.setData({ scrollAnchor: 'scroll-bottom-anchor', inputFocus: true });
+  },
+
+  /**
+   * 输入框失焦，重置 focus 状态（避免重复触发）
+   */
+  onInputBlur() {
+    this.setData({ inputFocus: false });
   },
 
   /**
@@ -187,11 +195,8 @@ Page({
     
     console.log('[详情页] 回复模式已设置:', this.data);
     
-    // 滚动到评论输入框
-    wx.pageScrollTo({
-      selector: '.comment-input-wrapper',
-      duration: 300
-    });
+    // scroll-view 内滚动到底部
+    this.setData({ scrollAnchor: 'scroll-bottom-anchor', inputFocus: true });
   },
 
   /**

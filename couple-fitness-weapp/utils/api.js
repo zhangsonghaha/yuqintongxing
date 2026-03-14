@@ -103,7 +103,7 @@ var checkInAPI = {
   
   // 删除打卡记录
   deleteCheckIn: function(recordId) {
-    return request.delete('/api/checkin/' + recordId);
+    return request.del('/api/checkin/' + recordId);
   }
 };
 

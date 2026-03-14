@@ -3,7 +3,19 @@
  */
 
 const api = require('../../utils/api');
-const dateUtil = require('../../utils/date');
+const storage = require('../../utils/storage');
+const request = require('../../utils/request');
+
+const EXERCISE_ICON_MAP = {
+  '跑步': '🏃', 'running': '🏃',
+  '骑行': '🚴', 'cycling': '🚴',
+  '瑜伽': '🧘', 'yoga': '🧘',
+  '游泳': '🏊', 'swimming': '🏊',
+  '健身房': '🏋️', 'gym': '🏋️',
+  '居家': '🤸', 'home': '🤸',
+  '户外': '🌿', 'outdoor': '🌿',
+  '力量训练': '💪', 'strength': '💪'
+};
 
 Page({
   data: {
@@ -13,9 +25,9 @@ Page({
     calendarDates: [],
     weekDays: ['日', '一', '二', '三', '四', '五', '六'],
     selectedDate: '',
-    
+
     // 筛选条件
-    filterType: '', // 运动类型筛选
+    filterType: '',
     exerciseTypes: [
       { label: '居家', value: '居家' },
       { label: '健身房', value: '健身房' },
@@ -24,33 +36,42 @@ Page({
       { label: '瑜伽', value: '瑜伽' },
       { label: '力量训练', value: '力量训练' }
     ],
-    
+
     // 打卡记录
     records: [],
     totalRecords: 0,
     pageNum: 1,
     pageSize: 20,
     hasMore: true,
-    
-    // 打卡日期集合（用于标记）- 使用对象代替Set
+
+    // 打卡日期集合（区分我/TA/双方）
+    // 值: 'me' | 'partner' | 'both'
     checkInDates: {},
-    
+
+    // 用户信息
+    userInfo: null,
+    partnerInfo: null,
+
     // 加载状态
     loading: false,
     loadingMore: false
   },
-  
+
   onLoad() {
-    console.log('日历页面加载');
+    const userInfo = storage.getUserInfo();
+    const partnerInfo = storage.getPartnerInfo();
+    this.setData({ userInfo, partnerInfo });
     this.initCalendar();
     this.loadCheckInDates();
-    this.loadRecords();
+    this.loadRecords(true);
   },
-  
+
   onShow() {
-    console.log('日历页面显示');
+    // 每次显示时刷新（打卡后回来能看到最新数据）
+    this.loadCheckInDates();
+    this.loadRecords(true);
   },
-  
+
   /**
    * 初始化日历
    */
@@ -58,16 +79,14 @@ Page({
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
-    
     this.setData({
       currentYear: year,
       currentMonth: month,
       selectedDate: this.formatDate(now)
     });
-    
     this.generateCalendar(year, month);
   },
-  
+
   /**
    * 生成日历数据
    */
@@ -77,55 +96,49 @@ Page({
     const lastDay = new Date(year, month, 0);
     const daysInMonth = lastDay.getDate();
     const startWeekDay = firstDay.getDay();
-    
-    // 上个月的日期填充
+    const today = this.formatDate(new Date());
+    const { checkInDates, selectedDate } = this.data;
+
+    // 上个月填充
     const prevMonthLastDay = new Date(year, month - 1, 0).getDate();
     for (let i = startWeekDay - 1; i >= 0; i--) {
       const day = prevMonthLastDay - i;
       const date = new Date(year, month - 2, day);
       dates.push({
-        day: day,
-        date: this.formatDate(date),
-        isCurrentMonth: false,
-        isToday: false,
-        hasCheckIn: false
+        day, date: this.formatDate(date),
+        isCurrentMonth: false, isToday: false,
+        checkInType: null
       });
     }
-    
-    // 当前月的日期
-    const today = this.formatDate(new Date());
+
+    // 当前月
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month - 1, day);
       const dateStr = this.formatDate(date);
       dates.push({
-        day: day,
-        date: dateStr,
+        day, date: dateStr,
         isCurrentMonth: true,
         isToday: dateStr === today,
-        hasCheckIn: !!this.data.checkInDates[dateStr]  // 使用对象属性检查
+        checkInType: checkInDates[dateStr] || null  // 'me' | 'partner' | 'both' | null
       });
     }
-    
-    // 下个月的日期填充
-    const remainingDays = 42 - dates.length; // 6行 x 7列
+
+    // 下个月填充
+    const remainingDays = 42 - dates.length;
     for (let day = 1; day <= remainingDays; day++) {
       const date = new Date(year, month, day);
       dates.push({
-        day: day,
-        date: this.formatDate(date),
-        isCurrentMonth: false,
-        isToday: false,
-        hasCheckIn: false
+        day, date: this.formatDate(date),
+        isCurrentMonth: false, isToday: false,
+        checkInType: null
       });
     }
-    
-    this.setData({
-      calendarDates: dates
-    });
+
+    this.setData({ calendarDates: dates });
   },
-  
+
   /**
-   * 加载打卡日期（用于标记）
+   * 加载打卡日期（同时加载我和TA的，用于日历标记）
    */
   loadCheckInDates() {
     const year = this.data.currentYear;
@@ -133,228 +146,179 @@ Page({
     const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
     const lastDay = new Date(year, month, 0).getDate();
     const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-    
-    api.checkInAPI.getCheckInRecords({
-      beginTime: startDate,  // 修改：使用 beginTime 而不是 startDate
-      endTime: endDate,      // 修改：使用 endTime 而不是 endDate
-      pageNum: 1,
-      pageSize: 100
-    }).then(res => {
-      if (res.code === 200) {
-        // RuoYi框架返回的分页数据格式：{ rows: [], total: 0 }
-        const records = res.rows || [];
-        const dates = {};  // 使用对象代替Set
-        records.forEach(record => {
-          dates[record.checkInDate] = true;  // 使用对象属性
-        });
-        
-        this.setData({
-          checkInDates: dates
-        });
-        
-        // 重新生成日历以更新标记
-        this.generateCalendar(year, month);
+
+    const params = { beginTime: startDate, endTime: endDate, pageNum: 1, pageSize: 100 };
+
+    // 并行请求我和TA的打卡日期
+    const myRequest = api.checkInAPI.getCheckInRecords(params);
+    const partnerId = this.data.partnerInfo
+      ? (this.data.partnerInfo.partnerId || this.data.partnerInfo.userId)
+      : null;
+    const partnerRequest = partnerId
+      ? api.checkInAPI.getCheckInRecordsByUserId(partnerId, params)
+      : Promise.resolve({ code: 200, rows: [] });
+
+    Promise.all([myRequest, partnerRequest]).then(([myRes, partnerRes]) => {
+      const myDates = new Set();
+      const partnerDates = new Set();
+
+      if (myRes.code === 200) {
+        (myRes.rows || []).forEach(r => myDates.add(r.checkInDate));
       }
+      if (partnerRes.code === 200) {
+        (partnerRes.rows || []).forEach(r => partnerDates.add(r.checkInDate));
+      }
+
+      // 合并：判断每天是我/TA/双方
+      const checkInDates = {};
+      myDates.forEach(d => {
+        checkInDates[d] = partnerDates.has(d) ? 'both' : 'me';
+      });
+      partnerDates.forEach(d => {
+        if (!checkInDates[d]) checkInDates[d] = 'partner';
+      });
+
+      this.setData({ checkInDates }, () => {
+        this.generateCalendar(year, month);
+      });
     }).catch(err => {
       console.error('加载打卡日期失败:', err);
     });
   },
-  
+
   /**
-   * 加载打卡记录
+   * 加载打卡记录列表（合并我和TA的）
    */
   loadRecords(reset = false) {
-    if (this.data.loading || this.data.loadingMore) {
-      return;
-    }
-    
+    if (!reset && (this.data.loading || this.data.loadingMore)) return;
+
     if (reset) {
-      this.setData({
-        loading: true,
-        pageNum: 1,
-        records: []
-      });
+      this.setData({ loading: true, pageNum: 1, records: [] });
     } else {
+      this.setData({ loadingMore: true });
+    }
+
+    const { filterType, selectedDate, pageNum, pageSize } = this.data;
+    const params = { pageNum, pageSize };
+    if (filterType) params.exerciseType = filterType;
+    if (selectedDate) {
+      params.beginTime = selectedDate;
+      params.endTime = selectedDate;
+    }
+
+    // 同时请求我和TA的记录
+    const myRequest = api.checkInAPI.getCheckInRecords(params);
+    const partnerId = this.data.partnerInfo
+      ? (this.data.partnerInfo.partnerId || this.data.partnerInfo.userId)
+      : null;
+    const partnerRequest = partnerId
+      ? api.checkInAPI.getCheckInRecordsByUserId(partnerId, params)
+      : Promise.resolve({ code: 200, rows: [], total: 0 });
+
+    Promise.all([myRequest, partnerRequest]).then(([myRes, partnerRes]) => {
+      const userInfo = this.data.userInfo;
+      const partnerInfo = this.data.partnerInfo;
+
+      const myRecords = (myRes.code === 200 ? myRes.rows || [] : []).map(r => ({
+        ...r,
+        exerciseIcon: EXERCISE_ICON_MAP[r.exerciseType] || '💪',
+        isPartner: false,
+        createTimeStr: this.formatTime(r.createTime)
+      }));
+
+      const partnerRecords = (partnerRes.code === 200 ? partnerRes.rows || [] : []).map(r => ({
+        ...r,
+        exerciseIcon: EXERCISE_ICON_MAP[r.exerciseType] || '💪',
+        isPartner: true,
+        createTimeStr: this.formatTime(r.createTime)
+      }));
+
+      // 合并并按日期倒序排序
+      let merged = [...myRecords, ...partnerRecords];
+      merged.sort((a, b) => {
+        const ta = new Date(a.checkInDate + ' ' + (a.createTime || '')).getTime();
+        const tb = new Date(b.checkInDate + ' ' + (b.createTime || '')).getTime();
+        return tb - ta;
+      });
+
+      const total = (myRes.total || 0) + (partnerRes.total || 0);
+
       this.setData({
-        loadingMore: true
-      });
-    }
-    
-    const params = {
-      pageNum: this.data.pageNum,
-      pageSize: this.data.pageSize
-    };
-    
-    // 添加筛选条件
-    if (this.data.filterType) {
-      params.exerciseType = this.data.filterType;
-    }
-    
-    // 如果选择了日期，只查询该日期的记录
-    if (this.data.selectedDate) {
-      params.beginTime = this.data.selectedDate;
-      params.endTime = this.data.selectedDate;
-      console.log('【日历】加载记录 - 日期筛选:', {
-        selectedDate: this.data.selectedDate,
-        beginTime: params.beginTime,
-        endTime: params.endTime
-      });
-    }
-    
-    console.log('【日历】API 请求参数:', params);
-    
-    api.checkInAPI.getCheckInRecords(params).then(res => {
-      if (res.code === 200) {
-        // RuoYi框架返回的分页数据格式：{ rows: [], total: 0 }
-        const records = res.rows || [];
-        const total = res.total || 0;
-        
-        // 格式化记录数据
-        const formattedRecords = records.map(record => {
-          const date = new Date(record.checkInDate);
-          return {
-            ...record,
-            dayOfMonth: date.getDate(),
-            monthYear: `${date.getMonth() + 1}月`,
-            createTime: this.formatTime(record.createTime)
-          };
-        });
-        
-        this.setData({
-          records: reset ? formattedRecords : [...this.data.records, ...formattedRecords],
-          totalRecords: total,
-          hasMore: this.data.pageNum * this.data.pageSize < total,
-          loading: false,
-          loadingMore: false
-        });
-      }
-    }).catch(err => {
-      console.error('加载打卡记录失败:', err);
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      });
-      this.setData({
+        records: reset ? merged : [...this.data.records, ...merged],
+        totalRecords: total,
+        hasMore: pageNum * pageSize < total,
         loading: false,
         loadingMore: false
       });
+    }).catch(err => {
+      console.error('加载打卡记录失败:', err);
+      this.setData({ loading: false, loadingMore: false });
     });
   },
-  
+
   /**
    * 上一月
    */
   onPrevMonth() {
-    let year = this.data.currentYear;
-    let month = this.data.currentMonth - 1;
-    
-    if (month < 1) {
-      year -= 1;
-      month = 12;
-    }
-    
-    this.setData({
-      currentYear: year,
-      currentMonth: month,
-      selectedDate: ''
-    });
-    
+    let { currentYear: year, currentMonth: month } = this.data;
+    month -= 1;
+    if (month < 1) { year -= 1; month = 12; }
+    this.setData({ currentYear: year, currentMonth: month, selectedDate: '' });
     this.generateCalendar(year, month);
     this.loadCheckInDates();
     this.loadRecords(true);
   },
-  
+
   /**
    * 下一月
    */
   onNextMonth() {
-    let year = this.data.currentYear;
-    let month = this.data.currentMonth + 1;
-    
-    if (month > 12) {
-      year += 1;
-      month = 1;
-    }
-    
-    this.setData({
-      currentYear: year,
-      currentMonth: month,
-      selectedDate: ''
-    });
-    
+    let { currentYear: year, currentMonth: month } = this.data;
+    month += 1;
+    if (month > 12) { year += 1; month = 1; }
+    this.setData({ currentYear: year, currentMonth: month, selectedDate: '' });
     this.generateCalendar(year, month);
     this.loadCheckInDates();
     this.loadRecords(true);
   },
-  
+
   /**
    * 日期点击
    */
   onDateClick(e) {
     const date = e.currentTarget.dataset.date;
-    const hasCheckIn = e.currentTarget.dataset.hasCheckin;
-    
-    console.log('【日历】点击日期:', date);
-    
-    this.setData({
-      selectedDate: date
-    }, () => {
-      console.log('【日历】selectedDate 已设置为:', this.data.selectedDate);
-      // 重新加载该日期的记录
+    this.setData({ selectedDate: date }, () => {
       this.loadRecords(true);
     });
   },
-  
+
   /**
    * 运动类型筛选
    */
   onFilterTypeChange(e) {
     const type = e.currentTarget.dataset.type;
-    this.setData({
-      filterType: type
-    });
-    
+    this.setData({ filterType: type });
     this.loadRecords(true);
   },
-  
-  /**
-   * 重置筛选
-   */
-  onResetFilter() {
-    this.setData({
-      filterType: '',
-      selectedDate: ''
-    });
-    
-    this.loadRecords(true);
-  },
-  
+
   /**
    * 加载更多
    */
   onLoadMore() {
-    if (!this.data.hasMore || this.data.loadingMore) {
-      return;
-    }
-    
-    this.setData({
-      pageNum: this.data.pageNum + 1
-    });
-    
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ pageNum: this.data.pageNum + 1 });
     this.loadRecords();
   },
-  
+
   /**
-   * 预览图片
+   * 点击记录跳转详情
    */
-  onPreviewImage(e) {
-    const url = e.currentTarget.dataset.url;
-    wx.previewImage({
-      urls: [url],
-      current: url
-    });
+  onRecordTap(e) {
+    const recordId = e.currentTarget.dataset.recordId;
+    if (!recordId) return;
+    wx.navigateTo({ url: `/pages/checkin-detail/index?recordId=${recordId}` });
   },
-  
+
   /**
    * 格式化日期 YYYY-MM-DD
    */
@@ -364,16 +328,14 @@ Page({
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   },
-  
+
   /**
-   * 格式化时间
+   * 格式化时间 HH:mm
    */
   formatTime(timeStr) {
     if (!timeStr) return '';
-    
     const date = new Date(timeStr);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    if (isNaN(date.getTime())) return '';
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 });

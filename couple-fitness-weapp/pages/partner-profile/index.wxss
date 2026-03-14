@@ -1,9 +1,8 @@
-/* 伴侣个人主页样式 */
+/* 伴侣主页 - 重设计版 */
 
-.partner-profile-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FFE5EF 0%, #FFF 30%);
-  padding-bottom: 40rpx;
+  background: #F6F7F8;
 }
 
 .loading-center {
@@ -13,104 +12,123 @@
   height: 100vh;
 }
 
-.content {
-  padding: 32rpx;
-}
-
-/* 头部信息卡片 */
-.header-card {
-  background: #FFF;
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(180deg, #FFD6E7 0%, #FFF0F5 100%);
+  padding: 88rpx 32rpx 40rpx;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 16rpx;
 }
 
-.avatar-section {
-  margin-right: 32rpx;
-}
-
-.avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 60rpx;
-  border: 4rpx solid #FFE5EF;
+.avatar-img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 80rpx;
+  border: 6rpx solid #FFFFFF;
 }
 
 .avatar-placeholder {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 60rpx;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 80rpx;
   background: linear-gradient(135deg, #FF6B9D 0%, #FFA8C5 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48rpx;
-  color: #FFF;
+  border: 6rpx solid #FFFFFF;
+}
+
+.avatar-text {
+  font-size: 64rpx;
   font-weight: bold;
-  border: 4rpx solid #FFE5EF;
+  color: #FFFFFF;
 }
 
-.info-section {
-  flex: 1;
+.hero-name {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1A1A1A;
 }
 
-.nickname {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 24rpx;
-}
-
-.stats-row {
+.hero-tag {
   display: flex;
   align-items: center;
+  gap: 8rpx;
+  background: #FFE5EF;
+  border-radius: 24rpx;
+  padding: 8rpx 24rpx;
 }
 
-.stat-item {
+.hero-tag-icon {
+  font-size: 22rpx;
+  color: #FF6B9D;
+}
+
+.hero-tag-text {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #FF6B9D;
+}
+
+/* ── 三项统计 ── */
+.stats-bar {
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 32rpx 24rpx;
+}
+
+.stats-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8rpx;
   flex: 1;
 }
 
-.stat-value {
-  font-size: 32rpx;
-  font-weight: bold;
+.stats-value {
+  font-size: 44rpx;
+  font-weight: 700;
   color: #FF6B9D;
-  margin-bottom: 8rpx;
 }
 
-.stat-label {
-  font-size: 24rpx;
-  color: #999;
+.stats-label {
+  font-size: 22rpx;
+  color: #9CA3AF;
 }
 
-.stat-divider {
+.stats-divider {
   width: 1rpx;
-  height: 40rpx;
-  background: #E5E5E5;
+  height: 64rpx;
+  background: #F3F4F6;
 }
 
-/* 数据统计卡片 */
-.data-card {
-  background: #FFF;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+/* ── 分隔 ── */
+.section-gap {
+  height: 16rpx;
+  background: #F6F7F8;
+}
+
+/* ── 通用卡片 ── */
+.card {
+  background: #FFFFFF;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
 }
 
 .card-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 24rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1A1A1A;
 }
 
-.data-grid {
+/* ── 运动数据 ── */
+.data-row {
   display: flex;
   justify-content: space-around;
 }
@@ -119,87 +137,122 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 12rpx;
 }
 
-.data-icon {
-  font-size: 48rpx;
-  margin-bottom: 12rpx;
+.data-icon-wrap {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-icon-pink { background: #FFF0F5; }
+.data-icon-indigo { background: #F0F5FF; }
+.data-icon-amber { background: #FFFBEB; }
+
+.data-emoji {
+  font-size: 40rpx;
 }
 
 .data-value {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #FF6B9D;
-  margin-bottom: 8rpx;
+  font-size: 36rpx;
+  font-weight: 700;
 }
+
+.data-pink { color: #FF6B9D; }
+.data-indigo { color: #6366F1; }
+.data-amber { color: #D97706; }
 
 .data-label {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 22rpx;
+  color: #9CA3AF;
 }
 
-/* 运动类型分布 */
-.distribution-card {
-  background: #FFF;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
-}
-
-.distribution-list {
-  margin-top: 16rpx;
-}
-
-.distribution-item {
+/* ── 运动偏好 ── */
+.pref-item {
   display: flex;
   align-items: center;
-  margin-bottom: 24rpx;
+  gap: 20rpx;
 }
 
-.distribution-label {
-  width: 140rpx;
-  font-size: 28rpx;
-  color: #666;
+.pref-label {
+  width: 80rpx;
+  font-size: 26rpx;
+  color: #6B7280;
 }
 
-.distribution-bar {
+.pref-bar-bg {
   flex: 1;
   height: 16rpx;
-  background: #F5F5F5;
+  background: #F3F4F6;
   border-radius: 8rpx;
-  margin: 0 16rpx;
   overflow: hidden;
 }
 
-.distribution-fill {
+.pref-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #FF6B9D 0%, #FFA8C5 100%);
   border-radius: 8rpx;
-  transition: width 0.3s ease;
 }
 
-.distribution-count {
-  width: 80rpx;
+.pref-count {
+  width: 60rpx;
   text-align: right;
-  font-size: 24rpx;
-  color: #999;
+  font-size: 22rpx;
+  color: #9CA3AF;
 }
 
-/* 标签页内容 */
-.achievements-section,
-.checkins-section {
+/* ── 标签页头部 ── */
+.tab-header {
+  background: #FFFFFF;
+  display: flex;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 0 0;
+  gap: 20rpx;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #9CA3AF;
+  padding-bottom: 20rpx;
+}
+
+.tab-active .tab-text {
+  font-weight: 600;
+  color: #FF6B9D;
+}
+
+.tab-line {
+  width: 60rpx;
+  height: 4rpx;
+  background: #FF6B9D;
+  border-radius: 2rpx;
+}
+
+/* ── 标签页内容 ── */
+.tab-content {
+  background: #FFFFFF;
   padding: 32rpx;
-  min-height: 400rpx;
 }
 
 .empty-state {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400rpx;
-  color: #999;
+  height: 300rpx;
   font-size: 28rpx;
+  color: #9CA3AF;
 }
 
 /* 隐私提示 */
@@ -207,166 +260,178 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 400rpx;
-  padding: 40rpx;
+  padding: 80rpx 40rpx;
+  gap: 16rpx;
 }
 
-.privacy-icon {
-  font-size: 96rpx;
-  margin-bottom: 24rpx;
-  opacity: 0.6;
-}
+.privacy-icon { font-size: 96rpx; opacity: 0.5; }
+.privacy-text { font-size: 30rpx; color: #6B7280; text-align: center; }
+.privacy-hint { font-size: 24rpx; color: #9CA3AF; text-align: center; }
 
-.privacy-text {
-  font-size: 32rpx;
-  color: #666;
-  margin-bottom: 16rpx;
-  text-align: center;
-}
-
-.privacy-hint {
-  font-size: 24rpx;
-  color: #999;
-  text-align: center;
-}
-
-/* 成就网格 */
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* ── 成就网格 ── */
+.ach-grid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 24rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 16rpx;
 }
 
-.achievement-item {
+.ach-item {
+  width: calc(33.33% - 16rpx);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx;
-  background: #FFF;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  gap: 12rpx;
+  padding: 28rpx 0;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
 }
 
-.achievement-item.locked {
+.ach-unlocked {
+  background: #FFF0F5;
+  border: 2rpx solid #FF6B9D;
+}
+
+.ach-locked {
+  background: #F6F7F8;
+  border: 2rpx solid transparent;
+}
+
+.ach-medal-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ach-medal-active {
+  /* 已解锁：正常显示 */
+}
+
+.ach-medal-inactive {
+  /* 未解锁：emoji 灰度 */
+  filter: grayscale(100%);
   opacity: 0.5;
 }
 
-.achievement-icon {
+.ach-medal-img {
   width: 80rpx;
   height: 80rpx;
-  margin-bottom: 12rpx;
 }
 
-.achievement-icon image {
-  width: 100%;
-  height: 100%;
-}
-
-.icon-placeholder {
+.ach-medal-emoji {
   font-size: 64rpx;
-  filter: grayscale(100%);
 }
 
-.achievement-item.unlocked .icon-placeholder {
-  filter: none;
-}
-
-.achievement-name {
-  font-size: 24rpx;
-  color: #333;
+.ach-name {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #9CA3AF;
   text-align: center;
-  margin-bottom: 8rpx;
 }
 
-.achievement-progress {
+.ach-name-active {
+  color: #FF6B9D;
+}
+
+.ach-progress {
   font-size: 20rpx;
-  color: #999;
+  color: #9CA3AF;
 }
 
-/* 打卡记录列表 */
-.checkins-list {
-  margin-bottom: 32rpx;
-}
-
+/* ── 打卡记录 ── */
 .checkin-item {
   display: flex;
-  background: #FFF;
-  border-radius: 16rpx;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 24rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .checkin-photo {
   width: 120rpx;
   height: 120rpx;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
   margin-right: 24rpx;
+  flex-shrink: 0;
 }
 
 .checkin-photo-placeholder {
   width: 120rpx;
   height: 120rpx;
-  border-radius: 12rpx;
-  background: #F5F5F5;
+  border-radius: 16rpx;
+  background: #F6F7F8;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48rpx;
   margin-right: 24rpx;
+  flex-shrink: 0;
 }
+
+.checkin-photo-emoji { font-size: 48rpx; }
 
 .checkin-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
 }
 
 .checkin-type {
   font-size: 28rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 12rpx;
+  font-weight: 700;
+  color: #1A1A1A;
 }
 
 .checkin-stats {
   display: flex;
-  gap: 24rpx;
-  margin-bottom: 12rpx;
+  gap: 20rpx;
 }
 
-.checkin-stats .stat {
+.checkin-stat {
   font-size: 24rpx;
-  color: #666;
+  color: #6B7280;
 }
 
 .checkin-time {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 22rpx;
+  color: #9CA3AF;
 }
 
 .checkin-actions {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   gap: 16rpx;
+  margin-left: 16rpx;
 }
 
 .action-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8rpx;
-  font-size: 24rpx;
-  color: #999;
+  gap: 4rpx;
 }
 
-/* 查看更多 */
+.action-count {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* ── 查看更多 ── */
 .view-more {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8rpx;
-  padding: 24rpx;
-  color: #FF6B9D;
+  padding: 32rpx 0 8rpx;
+}
+
+.view-more-text {
   font-size: 28rpx;
+  font-weight: 600;
+  color: #FF6B9D;
 }

@@ -1,93 +1,115 @@
-<view class="privacy-setting-page">
-  <!-- 页面标题 -->
-  <view class="page-header">
-    <text class="header-title">隐私与安全</text>
-    <text class="header-desc">管理你的隐私和数据安全</text>
+<view class="page">
+  <!-- 顶部 Hero -->
+  <view class="hero">
+    <view class="hero-icon">🔒</view>
+    <text class="hero-title">隐私与安全</text>
+    <text class="hero-sub">管理你的隐私和数据安全</text>
   </view>
 
-  <!-- 数据共享设置 -->
-  <view class="setting-section">
-    <view class="section-title">数据共享</view>
-    
-    <van-cell-group>
-      <van-cell title="伴侣可查看打卡记录" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.allowPartnerViewCheckins }}"
-          bind:change="onCheckinsViewChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell title="伴侣可查看统计数据" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.allowPartnerViewStats }}"
-          bind:change="onStatsViewChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell title="伴侣可查看成就" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.allowPartnerViewAchievements }}"
-          bind:change="onAchievementsViewChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell 
-        title="数据共享范围" 
-        value="{{ shareScopeOptions[setting.dataShareScope].label }}"
-        is-link
-        bind:click="showShareScopePicker"
-        title-class="cell-title"
+  <!-- 数据共享 -->
+  <view class="section-label">数据共享</view>
+  <view class="card">
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-blue">📋</view>
+        <text class="cell-title">伴侣可查看打卡记录</text>
+      </view>
+      <van-switch
+        checked="{{ setting.allowPartnerViewCheckins }}"
+        bind:change="onCheckinsViewChange"
+        active-color="#FF6B9D"
+        size="48rpx"
       />
-    </van-cell-group>
-    
-    <view class="section-tip">
-      <text>控制你的数据对伴侣的可见性</text>
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-green">📊</view>
+        <text class="cell-title">伴侣可查看统计数据</text>
+      </view>
+      <van-switch
+        checked="{{ setting.allowPartnerViewStats }}"
+        bind:change="onStatsViewChange"
+        active-color="#FF6B9D"
+        size="48rpx"
+      />
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-yellow">🏆</view>
+        <text class="cell-title">伴侣可查看成就</text>
+      </view>
+      <van-switch
+        checked="{{ setting.allowPartnerViewAchievements }}"
+        bind:change="onAchievementsViewChange"
+        active-color="#FF6B9D"
+        size="48rpx"
+      />
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell cell-link" bindtap="showShareScopePicker">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-purple">🌐</view>
+        <text class="cell-title">数据共享范围</text>
+      </view>
+      <view class="cell-right">
+        <text class="cell-value">{{ shareScopeOptions[setting.dataShareScope].label }}</text>
+        <text class="cell-arrow">›</text>
+      </view>
+    </view>
+  </view>
+  <text class="section-tip">控制你的数据对伴侣的可见性</text>
+
+  <!-- 账号安全 -->
+  <view class="section-label">账号安全</view>
+  <view class="card">
+    <view class="cell cell-link cell-danger" bindtap="deactivateAccount">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-red">⚠️</view>
+        <text class="cell-title cell-title-danger">注销账号</text>
+      </view>
+      <text class="cell-arrow">›</text>
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell cell-link cell-danger" bindtap="deleteAllData">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-red">🗑️</view>
+        <text class="cell-title cell-title-danger">删除所有数据</text>
+      </view>
+      <text class="cell-arrow">›</text>
     </view>
   </view>
 
-  <!-- 账号安全 -->
-  <view class="setting-section">
-    <view class="section-title">账号安全</view>
-    
-    <van-cell-group>
-      <van-cell 
-        title="注销账号" 
-        is-link
-        bind:click="deactivateAccount"
-        title-class="cell-title danger-text"
-      />
-      
-      <van-cell 
-        title="删除所有数据" 
-        is-link
-        bind:click="deleteAllData"
-        title-class="cell-title danger-text"
-      />
-    </van-cell-group>
-    
-    <view class="section-tip danger-tip">
-      <text>⚠️ 注销账号后将无法登录</text>
-      <text>⚠️ 删除数据后无法恢复，请谨慎操作</text>
+  <!-- 危险提示 -->
+  <view class="danger-tips">
+    <view class="danger-tip-item">
+      <text class="danger-dot">⚠️</text>
+      <text class="danger-text">注销账号后将无法登录</text>
+    </view>
+    <view class="danger-tip-item">
+      <text class="danger-dot">⚠️</text>
+      <text class="danger-text">删除数据后无法恢复，请谨慎操作</text>
     </view>
   </view>
 
   <!-- 数据共享范围选择器 -->
-  <van-popup 
-    show="{{ showShareScopePicker }}" 
-    position="bottom"
-    bind:close="closeShareScopePicker"
-  >
+  <van-popup show="{{ showShareScopePicker }}" position="bottom" bind:close="closeShareScopePicker" round>
     <van-picker
       columns="{{ shareScopeOptions }}"
       value-key="label"
       bind:confirm="onShareScopeConfirm"
       bind:cancel="closeShareScopePicker"
+      show-toolbar
+      title="选择共享范围"
     />
   </van-popup>
 </view>

@@ -17,6 +17,9 @@ Page({
     // 用户信息
     userInfo: null,
     partnerInfo: null,
+    avatarText: '我',
+    daysCount: 0,
+    unreadCount: 0,
     
     // 打卡状态
     todayStatus: {
@@ -230,15 +233,27 @@ Page({
       const formattedCheckIns = this.formatCheckInRecords(recentCheckIns, userInfo, partnerInfo);
       console.log('【首页】格式化后的打卡记录:', formattedCheckIns);
       
+      // 计算头像文字
+      const nickname = userInfo ? (userInfo.nickname || '用') : '用';
+      const avatarText = nickname.substring(0, 1);
+
+      // 计算在一起天数
+      let daysCount = 0;
+      if (partnerInfo && partnerInfo.pairedAt) {
+        const pairedDate = new Date(partnerInfo.pairedAt.replace(/-/g, '/'));
+        daysCount = Math.max(1, Math.floor((Date.now() - pairedDate) / (1000 * 60 * 60 * 24)) + 1);
+      }
+
       this.setData({
         userInfo,
         partnerInfo,
+        avatarText,
+        daysCount,
         todayStatus,
         consecutiveDays: userStats.consecutiveDays || 0,
         level: levelInfo.level || 1,
         experience: levelInfo.experience || 0,
         recentCheckIns: formattedCheckIns,
-        // 添加统计数据
         userStats: userStats,
         partnerStats: partnerStats,
         loading: false,
@@ -261,7 +276,10 @@ Page({
    */
   formatTime(timestamp) {
     if (!timestamp) return '';
-    const date = new Date(timestamp);
+    // iOS 不支持 "yyyy-MM-dd HH:mm:ss" 格式，需将空格替换为 T
+    const normalized = typeof timestamp === 'string' ? timestamp.replace(' ', 'T') : timestamp;
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return '';
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   },
   
@@ -309,8 +327,9 @@ Page({
         }
       }
       
-      // 格式化时间
-      const checkInDate = new Date(record.checkInDate || record.createdAt);
+      // 格式化时间（iOS 不支持 "yyyy-MM-dd HH:mm:ss"，需替换空格为 T）
+      const rawDate = record.checkInDate || record.createdAt;
+      const checkInDate = new Date(typeof rawDate === 'string' ? rawDate.replace(' ', 'T') : rawDate);
       const now = new Date();
       const isToday = checkInDate.toDateString() === now.toDateString();
       const yesterday = new Date(now);
@@ -353,6 +372,13 @@ Page({
       'strength': '力量训练'
     };
     return typeMap[type] || type || '运动';
+  },
+
+  /**
+   * 跳转到通知中心
+   */
+  goToNotifications() {
+    wx.navigateTo({ url: '/pages/notifications/index' });
   },
 
   /**
@@ -456,7 +482,7 @@ Page({
    * 点击打卡记录卡片
    */
   onCheckInCardTap(e) {
-    const { recordId } = e.detail;
+    const recordId = e.currentTarget.dataset.recordId;
     console.log('点击打卡记录:', recordId);
     
     if (!recordId) {

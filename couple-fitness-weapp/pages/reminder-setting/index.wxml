@@ -1,98 +1,99 @@
-<view class="reminder-setting-page">
-  <!-- 页面标题 -->
-  <view class="page-header">
-    <text class="header-title">通知设置</text>
-    <text class="header-desc">管理你的提醒和通知偏好</text>
+<view class="page">
+  <!-- 顶部 Hero -->
+  <view class="hero">
+    <view class="hero-icon">🔔</view>
+    <text class="hero-title">通知设置</text>
+    <text class="hero-sub">管理你的提醒和通知偏好</text>
   </view>
 
-  <!-- 运动提醒设置 -->
-  <view class="setting-section">
-    <view class="section-title">运动提醒</view>
-    
-    <van-cell-group>
-      <van-cell title="运动提醒" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.exerciseReminderEnabled }}"
-          bind:change="onExerciseReminderChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell 
-        wx:if="{{ setting.exerciseReminderEnabled }}"
-        title="提醒时间" 
-        value="{{ currentTime }}"
-        is-link
-        bind:click="showTimePicker"
-        title-class="cell-title"
+  <!-- 运动提醒 -->
+  <view class="section-label">运动提醒</view>
+  <view class="card">
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-orange">🏃</view>
+        <text class="cell-title">运动提醒</text>
+      </view>
+      <van-switch
+        checked="{{ setting.exerciseReminderEnabled }}"
+        bind:change="onExerciseReminderChange"
+        active-color="#FF6B9D"
+        size="48rpx"
       />
-    </van-cell-group>
-    
-    <view class="section-tip">
-      <text>开启后，系统会在设定时间提醒你运动打卡</text>
+    </view>
+
+    <view class="cell-divider" wx:if="{{ setting.exerciseReminderEnabled }}"></view>
+
+    <view class="cell cell-link" wx:if="{{ setting.exerciseReminderEnabled }}" bindtap="showTimePicker">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-blue">⏰</view>
+        <text class="cell-title">提醒时间</text>
+      </view>
+      <view class="cell-right">
+        <text class="cell-value">{{ currentTime }}</text>
+        <text class="cell-arrow">›</text>
+      </view>
     </view>
   </view>
+  <text class="section-tip">开启后，系统会在设定时间提醒你运动打卡</text>
 
-  <!-- 互动通知设置 -->
-  <view class="setting-section">
-    <view class="section-title">互动通知</view>
-    
-    <van-cell-group>
-      <van-cell title="点赞通知" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.likeNotificationEnabled }}"
-          bind:change="onLikeNotificationChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell title="评论通知" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.commentNotificationEnabled }}"
-          bind:change="onCommentNotificationChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-      
-      <van-cell title="目标完成通知" title-class="cell-title">
-        <van-switch 
-          slot="right-icon"
-          checked="{{ setting.goalNotificationEnabled }}"
-          bind:change="onGoalNotificationChange"
-          active-color="#FF6B9D"
-        />
-      </van-cell>
-    </van-cell-group>
-    
-    <view class="section-tip">
-      <text>接收伴侣的点赞、评论和目标完成提醒</text>
+  <!-- 互动通知 -->
+  <view class="section-label">互动通知</view>
+  <view class="card">
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-pink">❤️</view>
+        <text class="cell-title">点赞通知</text>
+      </view>
+      <van-switch
+        checked="{{ setting.likeNotificationEnabled }}"
+        bind:change="onLikeNotificationChange"
+        active-color="#FF6B9D"
+        size="48rpx"
+      />
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-purple">💬</view>
+        <text class="cell-title">评论通知</text>
+      </view>
+      <van-switch
+        checked="{{ setting.commentNotificationEnabled }}"
+        bind:change="onCommentNotificationChange"
+        active-color="#FF6B9D"
+        size="48rpx"
+      />
+    </view>
+
+    <view class="cell-divider"></view>
+
+    <view class="cell">
+      <view class="cell-left">
+        <view class="cell-icon-wrap cell-icon-green">🎯</view>
+        <text class="cell-title">目标完成通知</text>
+      </view>
+      <van-switch
+        checked="{{ setting.goalNotificationEnabled }}"
+        bind:change="onGoalNotificationChange"
+        active-color="#FF6B9D"
+        size="48rpx"
+      />
     </view>
   </view>
+  <text class="section-tip">接收伴侣的点赞、评论和目标完成提醒</text>
 
-  <!-- 订阅消息按钮 -->
-  <view class="subscribe-section">
-    <van-button 
-      type="primary" 
-      block
-      color="#FF6B9D"
-      bind:click="requestSubscribeMessage"
-    >
-      订阅消息通知
-    </van-button>
-    <view class="subscribe-tip">
-      <text>点击订阅后，你将收到微信服务通知</text>
-    </view>
+  <!-- 订阅按钮 -->
+  <view class="subscribe-btn" bindtap="requestSubscribeMessage">
+    <text class="subscribe-icon">📨</text>
+    <text class="subscribe-text">订阅消息通知</text>
   </view>
+  <text class="subscribe-tip">点击订阅后，你将收到微信服务通知</text>
 
-  <!-- 时间选择器弹窗 -->
-  <van-popup 
-    show="{{ timePickerVisible }}" 
-    position="bottom"
-    bind:close="closeTimePicker"
-  >
+  <!-- 时间选择器 -->
+  <van-popup show="{{ timePickerVisible }}" position="bottom" bind:close="closeTimePicker" round>
     <van-datetime-picker
       type="time"
       value="{{ currentTime }}"

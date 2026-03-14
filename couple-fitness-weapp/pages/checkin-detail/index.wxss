@@ -1,292 +1,396 @@
 /* pages/checkin-detail/index.wxss */
 @import '../../styles/colors.wxss';
 
-.detail-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #FFF5FB 0%, #FFE5F0 50%, #FFF0F6 100%);
-  padding-bottom: 120rpx;
-}
-
-/* 加载中 */
-.loading-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-/* 详情内容 */
-.detail-content {
-  padding: 20rpx;
-}
-
-/* 用户信息 */
-.user-section {
-  background: white;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 20rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4rpx 16rpx rgba(255, 107, 157, 0.08);
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.user-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 40rpx;
-  margin-right: 20rpx;
-  border: 3rpx solid var(--primary-color);
-}
-
-.user-details {
+/* ===== 页面容器 ===== */
+.page-container {
+  height: 100vh;
+  background: #F8F8F8;
   display: flex;
   flex-direction: column;
 }
 
-.user-name {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8rpx;
+.page-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.check-in-time {
-  font-size: 24rpx;
-  color: #999;
+/* ===== 加载 ===== */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-/* 运动信息卡片 */
-.exercise-card {
-  background: white;
-  border-radius: 16rpx;
-  padding: 32rpx;
+/* ===== 滚动区域 ===== */
+.scroll-content {
+  flex: 1;
+  height: 0; /* flex 子元素需要显式 height:0 才能让 scroll-view 正确计算高度 */
+  padding: 16rpx 24rpx 0;
+  box-sizing: border-box;
+}
+
+.scroll-bottom {
+  height: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+/* ===== 通用卡片 ===== */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx 28rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(255, 107, 157, 0.08);
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.05);
 }
 
-.exercise-header {
-  margin-bottom: 32rpx;
+/* ===== 区块标题 ===== */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 20rpx;
 }
 
-.exercise-type {
-  display: inline-block;
+.section-bar {
+  width: 6rpx;
+  height: 28rpx;
+  background: #FF6B9D;
+  border-radius: 3rpx;
+  flex-shrink: 0;
 }
 
-.exercise-stats {
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+/* ===== 用户卡片 ===== */
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+}
+
+.user-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.avatar-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: #FFE8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+}
+
+.avatar-text {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #FF6B9D;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.user-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.user-time {
+  font-size: 22rpx;
+  color: #9C9B99;
+}
+
+.delete-btn {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: #FFF0F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.delete-btn:active { opacity: 0.7; }
+.delete-icon { font-size: 28rpx; }
+
+/* ===== 运动信息卡片 ===== */
+.exercise-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.exercise-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 52rpx;
+  padding: 0 24rpx;
+  background: #FFE8F0;
+  border-radius: 26rpx;
+  align-self: flex-start;
+}
+
+.exercise-badge-txt {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #FF6B9D;
+}
+
+.stats-row {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 24rpx 0;
-  background: linear-gradient(135deg, #FFF5FB 0%, #FFE5F0 100%);
-  border-radius: 12rpx;
+  height: 140rpx;
+  background: linear-gradient(135deg, #FFE8F0 0%, #FFF5F8 100%);
+  border-radius: 20rpx;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8rpx;
+  gap: 6rpx;
 }
 
-.stat-value {
-  font-size: 40rpx;
+.stat-icon { font-size: 32rpx; }
+
+.stat-val {
+  font-size: 52rpx;
   font-weight: 700;
-  color: var(--primary-color);
-  margin-top: 8rpx;
+  color: #FF6B9D;
+  line-height: 1;
 }
 
-.stat-label {
-  font-size: 24rpx;
-  color: #999;
+.stat-lbl {
+  font-size: 22rpx;
+  color: #9C9B99;
 }
 
 .stat-divider {
   width: 2rpx;
-  height: 60rpx;
-  background: rgba(255, 107, 157, 0.2);
+  height: 72rpx;
+  background: #FFCCE0;
 }
 
-/* 通用区块样式 */
-.photo-section,
-.notes-section,
-.location-section,
-.interaction-section,
-.comments-section {
-  background: white;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(255, 107, 157, 0.08);
-}
-
-.section-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20rpx;
-  display: flex;
-  align-items: center;
-}
-
-.section-title::before {
-  content: '';
-  width: 6rpx;
-  height: 28rpx;
-  background: var(--primary-color);
-  border-radius: 3rpx;
-  margin-right: 12rpx;
-}
-
-/* 打卡照片 */
-.check-in-photo {
+/* ===== 打卡照片 ===== */
+.photo-img {
   width: 100%;
-  height: 400rpx;
-  border-radius: 12rpx;
-  object-fit: cover;
+  height: 360rpx;
+  border-radius: 20rpx;
+  display: block;
 }
 
-/* 备注 */
-.notes-content {
-  font-size: 28rpx;
-  line-height: 1.6;
-  color: #666;
-  padding: 20rpx;
+.photo-img:active { opacity: 0.9; }
+
+/* ===== 备注 ===== */
+.notes-bg {
   background: #F8F8F8;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
 }
 
-/* 评论列表 */
-.comment-item {
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #F0F0F0;
+.notes-txt {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.7;
 }
 
-.comment-item:last-child {
-  border-bottom: none;
-}
-
-.comment-header {
+/* ===== 位置 ===== */
+.location-row {
   display: flex;
   align-items: center;
-  margin-bottom: 16rpx;
+  gap: 12rpx;
+  height: 72rpx;
 }
+
+.location-row:active { opacity: 0.7; }
+.location-pin { font-size: 28rpx; flex-shrink: 0; }
+
+.location-addr {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-arrow {
+  font-size: 36rpx;
+  color: #C0C0C0;
+  flex-shrink: 0;
+}
+
+/* ===== 互动栏 ===== */
+.interaction-card {
+  padding: 20rpx 28rpx;
+}
+
+/* ===== 评论列表 ===== */
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.comment-item:last-child { border-bottom: none; }
+
+.comment-avatar-wrap { flex-shrink: 0; }
 
 .comment-avatar {
   width: 60rpx;
   height: 60rpx;
   border-radius: 30rpx;
-  margin-right: 16rpx;
 }
 
-.comment-info {
+.comment-avatar-placeholder {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  background: #FFE8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comment-avatar-txt {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #FF6B9D;
+}
+
+.comment-body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 8rpx;
 }
 
-.comment-user {
-  font-size: 28rpx;
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.comment-name {
+  font-size: 26rpx;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 4rpx;
+  color: #1A1A1A;
 }
 
 .comment-time {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 22rpx;
+  color: #C0C0C0;
 }
 
 .comment-content {
-  font-size: 28rpx;
+  font-size: 26rpx;
+  color: #666666;
   line-height: 1.6;
-  color: #666;
-  padding-left: 76rpx;
 }
 
-/* 无评论提示 */
-.no-comments {
-  padding: 60rpx 0;
-  text-align: center;
-}
-
-/* 评论输入 */
-.comment-input-section {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  padding: 20rpx;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
-  z-index: 100;
-}
-
-/* 评论操作按钮 */
-.comment-actions {
-  display: flex;
-  gap: 32rpx;
-  margin-top: 16rpx;
-  padding-left: 80rpx;
-}
-
-.action-btn {
-  font-size: 24rpx;
-  color: #999;
-  padding: 8rpx 0;
-}
-
-.reply-btn:active,
-.delete-btn:active {
-  opacity: 0.6;
-}
-
-.delete-btn {
-  color: #ff4d4f;
-}
-
-/* 回复关系显示 */
 .reply-to {
   color: #FF6B9D;
   font-weight: 500;
 }
 
-/* 回复模式提示 */
-.reply-mode-tip {
+.comment-actions {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 4rpx;
+}
+
+.action-reply {
+  font-size: 22rpx;
+  color: #9C9B99;
+}
+
+.action-reply:active { color: #FF6B9D; }
+
+.action-delete {
+  font-size: 22rpx;
+  color: #FF4444;
+}
+
+/* ===== 空状态 ===== */
+.empty-comments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 40rpx;
+  gap: 16rpx;
+}
+
+.empty-emoji { font-size: 64rpx; }
+
+.empty-txt {
+  font-size: 26rpx;
+  color: #C0C0C0;
+}
+
+/* ===== 回复提示条 ===== */
+.reply-tip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 32rpx;
-  background: linear-gradient(135deg, #FF6B9D 0%, #FFA5C0 100%);
-  color: #fff;
-  font-size: 28rpx;
-  margin: 0 -32rpx 24rpx -32rpx;
-  box-shadow: 0 4rpx 12rpx rgba(255, 107, 157, 0.2);
+  padding: 16rpx 28rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF8FB3 100%);
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
 }
 
-.reply-tip-text {
-  flex: 1;
+.reply-tip-txt {
+  font-size: 26rpx;
+  color: #FFFFFF;
   font-weight: 500;
 }
 
-.reply-mode-tip van-icon {
-  color: #fff;
+.reply-tip-close {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.8);
   padding: 8rpx;
-  opacity: 0.9;
 }
 
-.reply-mode-tip van-icon:active {
-  opacity: 0.6;
-}
-
-/* 评论输入包装器 */
-.comment-input-wrapper {
-  margin-top: 32rpx;
+/* ===== 底部输入栏 ===== */
+.input-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #FFFFFF;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
+  padding-bottom: env(safe-area-inset-bottom);
 }

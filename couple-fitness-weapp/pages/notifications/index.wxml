@@ -1,62 +1,60 @@
 <!-- 通知中心页面 -->
-<view class="container">
+<view class="page">
   <!-- 顶部操作栏 -->
-  <view class="header-actions">
-    <text class="action-text" wx:if="{{ unreadCount > 0 }}" bindtap="markAllAsRead">全部标为已读</text>
+  <view class="top-bar" wx:if="{{ notifications.length > 0 }}">
+    <view class="unread-badge" wx:if="{{ unreadCount > 0 }}">
+      <text class="unread-num">{{ unreadCount }}</text>
+      <text class="unread-label">条未读</text>
+    </view>
+    <view wx:else class="all-read-tip">全部已读 ✓</view>
+    <view class="mark-all-btn" wx:if="{{ unreadCount > 0 }}" bindtap="markAllAsRead">
+      <text>全部已读</text>
+    </view>
   </view>
 
   <!-- 通知列表 -->
-  <view class="notification-list" wx:if="{{ notifications.length > 0 }}">
-    <view 
-      class="notification-item {{ item.isRead ? 'read' : 'unread' }}" 
-      wx:for="{{ notifications }}" 
+  <view class="list" wx:if="{{ notifications.length > 0 }}">
+    <view
+      class="item {{ item.isRead ? '' : 'item-unread' }}"
+      wx:for="{{ notifications }}"
       wx:key="notificationId"
       bindtap="onNotificationTap"
       data-item="{{ item }}"
     >
-      <!-- 未读标记 -->
-      <view class="unread-dot" wx:if="{{ !item.isRead }}"></view>
-      
-      <!-- 通知图标 -->
-      <view class="notification-icon {{ item.type }}">
-        <text wx:if="{{ item.type === 'like' }}">❤️</text>
-        <text wx:if="{{ item.type === 'comment' }}">💬</text>
+      <!-- 未读圆点 -->
+      <view class="dot" wx:if="{{ !item.isRead }}"></view>
+
+      <!-- 图标 -->
+      <view class="icon-wrap {{ item.type === 'like' ? 'icon-like' : 'icon-comment' }}">
+        <text class="icon-emoji">{{ item.type === 'like' ? '❤️' : '💬' }}</text>
       </view>
 
-      <!-- 通知内容 -->
-      <view class="notification-content">
-        <view class="notification-header">
-          <text class="from-user">{{ item.fromUserNickname || '用户' }}</text>
-          <text class="notification-action">
-            {{ item.type === 'like' ? '点赞了你的打卡' : '评论了你的打卡' }}
-          </text>
+      <!-- 内容 -->
+      <view class="content">
+        <view class="content-top">
+          <text class="username">{{ item.fromUserNickname || '用户' }}</text>
+          <text class="action">{{ item.type === 'like' ? '点赞了你的打卡' : '评论了你的打卡' }}</text>
         </view>
-        
-        <view class="notification-detail" wx:if="{{ item.type === 'comment' && item.content }}">
-          <text class="comment-content">{{ item.content }}</text>
+        <view class="quote" wx:if="{{ item.type === 'comment' && item.content }}">
+          <text class="quote-text">{{ item.content }}</text>
         </view>
-        
-        <view class="notification-time">
-          <text>{{ item.createdAt }}</text>
-        </view>
+        <text class="time">{{ item.createdAt }}</text>
       </view>
 
-      <!-- 右箭头 -->
-      <view class="notification-arrow">
-        <text>></text>
-      </view>
+      <!-- 箭头 -->
+      <view class="arrow">›</view>
     </view>
   </view>
 
   <!-- 空状态 -->
-  <van-empty 
-    wx:if="{{ notifications.length === 0 && !loading }}"
-    description="暂无通知"
-    image="https://img.yzcdn.cn/vant/custom-empty-image.png"
-  />
+  <view class="empty" wx:if="{{ notifications.length === 0 && !loading }}">
+    <view class="empty-icon">🔔</view>
+    <text class="empty-title">暂无通知</text>
+    <text class="empty-desc">伴侣互动后会在这里显示</text>
+  </view>
 
-  <!-- 加载状态 -->
-  <van-loading wx:if="{{ loading }}" type="spinner" color="#FF6B9D" vertical>
-    加载中...
-  </van-loading>
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{ loading }}">
+    <van-loading type="spinner" color="#FF6B9D" size="48rpx" />
+  </view>
 </view>
